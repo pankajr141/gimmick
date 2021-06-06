@@ -11,7 +11,8 @@ What do we do internally ? we trained neuralnets, we add different type of netwo
 just like that, its python everything should be easy
 
 ## Dependency
-Gimmick autmatically install all the dependency for you, but occationaly you run into one of those bugs, so in a nutshell we use tensorflow, sklearn
+Gimmick autmatically install all the dependency for you, but occationaly you run into one of those bugs, so in a nutshell we use tensorflow, sklearn.
+i know torch is much faster, we will get their
 
 ## Examples
 we have already provided samples with the github repo, you can browse it, read it and run it.
@@ -33,7 +34,7 @@ model = gimmick.learn(images, algo='autoencoder_dense', epochs=500, batch_size=8
 images_gen = model.generate(16, batch_size=8)
 </pre>
 
-### usecase 2 - I wanna know everything
+### usecase 3 - I wanna know everything
 
 Go through the detailed documentation.
 
