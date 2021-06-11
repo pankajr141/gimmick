@@ -6,4 +6,3 @@ gimmick.egg-info*
 *.pkl
 *.png
 *.h5
-model*
