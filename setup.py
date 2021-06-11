@@ -6,7 +6,7 @@ with open("README.md", "r") as fh:
 
 setuptools.setup(
     name="gimmick",
-    version="0.1",
+    version="0.2",
     author="Pankaj Rawat",
     author_email="pankajr141@gmail.com",
     description="Libraray contains algo to generate images by learning representation from data",

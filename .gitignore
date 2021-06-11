@@ -1,5 +1,9 @@
 build*
-dist*
+dist/*
 gimmick.egg-info*
 *.pyc
 .ipynb_checkpoints*
+*.pkl
+*.png
+*.h5
+model*

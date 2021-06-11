@@ -39,8 +39,8 @@ class Model():
         print("num_decoder_layers:\t", num_decoder_layers)
         print("log2_code:\t\t", log2_code)
 
-        model = keras.Sequential(name="model_dense")
-        model.add(keras.Input(shape=images_shape, dtype=tf.int8))
+        model = keras.Sequential(name="autoencoder_dense")
+        model.add(layers.InputLayer(input_shape=images_shape))
         model.add(layers.Flatten())
         
         # Encoder Layer
@@ -95,12 +95,12 @@ class Model():
         model = self.model
         images_shape = images[0].shape
         
-        layers = [keras.Input(shape=images_shape, dtype=tf.int8)]
+        layers_ = [layers.InputLayer(input_shape=images_shape)]
         encoder_layers = [layer.name if 'encoder_layer' in layer.name else None for layer in model.layers]
         num_encoder_layers = len(list(filter(lambda x: x, encoder_layers))) + 2 # 1 for Flatten layer and 1 for code layer
-        layers.extend(model.layers[:num_encoder_layers])  # Trim all layers except encoder layers
+        layers_.extend(model.layers[:num_encoder_layers])  # Trim all layers except encoder layers
 
-        model_code_generator = keras.Sequential(layers)
+        model_code_generator = keras.Sequential(layers_)
         model_code_generator.build((None, images_shape[0], images_shape[1], images_shape[2]))
 
         for layer in model_code_generator.layers:
