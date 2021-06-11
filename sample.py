@@ -1,3 +1,4 @@
+import os
 import gimmick
 from sklearn import datasets
 
