@@ -8,7 +8,6 @@ from tensorflow.keras.callbacks import ModelCheckpoint
 from datetime import datetime
 from gimmick import constants
 
-
 class Model():
     def __init__(self, learning_rate=None, optimizer=None, optimizer_keys=None, loss_function=None, loss_function_keys=None, metrics=None, metrics_keys=None,
                  code_length=8, num_encoder_layers=-1, num_decoder_layers=-1):
@@ -36,59 +35,82 @@ class Model():
         print("num_decoder_layers:\t", num_decoder_layers)
         print("log2_code:\t\t", log2_code)
 
-        model = keras.Sequential(name="autoencoder_cnn")
-        model.add(layers.InputLayer(input_shape=images_shape))
-        model.add(layers.Reshape((images_shape[0], images_shape[1], images_shape[2])))
-
         filter_size = (3, 3)
         pool_size = (2, 2)
 
-        # Encoder Layer
-        for i in range(1, num_encoder_layers + 1):
-            neurons = 2 ** (num_encoder_layers - i + log2_code + 1) # Encoder layer size will be always greater then code_length by multiple of 2
+        def _encoder(x):
+            # x = layers.Reshape((images_shape[0], images_shape[1], images_shape[2]))(x)
 
-            #model.add(layers.Conv2D(neurons, filter_size, activation='relu', padding='same', name="encoder_layer_" + str(i) ))
-            #model.add(layers.MaxPooling2D(pool_size=pool_size, padding='same'))
+            # Encoder Layer
+            for i in range(1, num_encoder_layers + 1):
+                neurons = 2 ** (num_encoder_layers - i + log2_code + 1) # Encoder layer size will be always greater then code_length by multiple of 2
 
-            if i == 1 and images_shape[0] <= 16:
-                model.add(layers.Conv2D(neurons, filter_size, activation='relu', padding='same', strides=1, name="encoder_layer_extra1"))
-            if i == 1 and images_shape[0] <= 8:
-                model.add(layers.Conv2D(neurons, filter_size, activation='relu', padding='same', strides=1, name="encoder_layer_extra2"))
-            model.add(layers.Conv2D(neurons, filter_size, activation='relu', padding='same', strides=2, name="encoder_layer_" + str(i) ))
+                if i == 1 and images_shape[0] <= 16:
+                    x = layers.Conv2D(neurons, filter_size, activation='relu', padding='same', strides=1, name="encoder_layer_extra1")(x)
+                if i == 1 and images_shape[0] <= 8:
+                    x = layers.Conv2D(neurons, filter_size, activation='relu', padding='same', strides=1, name="encoder_layer_extra2")(x)
+                x = layers.Conv2D(neurons, filter_size, activation='relu', padding='same', strides=2, name="encoder_layer_" + str(i) )(x)
 
-        # Code Layer
-        model.add(layers.Flatten())
-        model.add(layers.Dense(self.code_length, name="code"))
-        model.add(layers.Reshape((2, 2, int(self.code_length / 4) )))
+            # Code Layer
+            x = layers.Flatten()(x)
+            return x
 
-        # Decoder Layer
-        for i in range(1, num_decoder_layers + 1):
-            neurons = 2 ** (i + log2_code)  # Decoder layer size will be always greater then code_length by multiple of 2
+        def _decoder(code):
 
-            #model.add(layers.Conv2D(neurons, filter_size, activation='relu', padding='same', name="decoder_layer_" + str(i) ))
-            #model.add(layers.UpSampling2D(size=pool_size, interpolation='nearest'))
+            x = layers.Reshape((2, 2, int(self.code_length / 4)))(code)
 
-            if i == 1 and images_shape[0] <= 16:
-                model.add(layers.Conv2DTranspose(neurons, filter_size, activation='relu', padding='same', strides=1, name="decoder_layer_extra1" ))
-            if i == 1 and images_shape[0] <= 8:
-                model.add(layers.Conv2DTranspose(neurons, filter_size, activation='relu', padding='same', strides=1, name="decoder_layer_extra2" ))
-            model.add(layers.Conv2DTranspose(neurons, filter_size, activation='relu', padding='same', strides=2, name="decoder_layer_" + str(i) ))
+            # Decoder Layer
+            for i in range(1, num_decoder_layers + 1):
+                neurons = 2 ** (i + log2_code)  # Decoder layer size will be always greater then code_length by multiple of 2
 
-        #model.add(layers.Conv2D(images_shape[2], filter_size, activation='relu', padding='same', name="decoder_layer_" + str(i + 1) ))
-        #model.add(layers.UpSampling2D(size=pool_size, interpolation='nearest'))
-        model.add(layers.Conv2DTranspose(images_shape[2], filter_size, activation='relu', padding='same', strides=2, name='decoder_layer_%s' % str(i + 1) ))
+                if i == 1 and images_shape[0] <= 16:
+                    x = layers.Conv2DTranspose(neurons, filter_size, activation='relu', padding='same', strides=1, name="decoder_layer_extra1" )(x)
+                if i == 1 and images_shape[0] <= 8:
+                    x = layers.Conv2DTranspose(neurons, filter_size, activation='relu', padding='same', strides=1, name="decoder_layer_extra2" )(x)
+                x = layers.Conv2DTranspose(neurons, filter_size, activation='relu', padding='same', strides=2, name="decoder_layer_" + str(i) )(x)
 
-#         model.add(layers.Flatten())
-#         model.add(layers.Dropout(0.5))
-#         model.add(layers.Dense(total_pixels, activation="relu", name="final_layer"))
-#         model.add(layers.Reshape(images_shape))
+            output = layers.Conv2DTranspose(images_shape[2], filter_size, activation='relu', padding='same', strides=2, name='decoder_layer_%s' % str(i + 1) )(x)
+            return output
+
+        input = keras.Input(shape=images_shape)
+
+        x = _encoder(input)
+
+        mean = layers.Dense(self.code_length, name='mean')(x)
+        std = keras.activations.softplus(layers.Dense(self.code_length, name='std')(x))
+
+        # Reparametrization trick
+        epsilon = tf.random.normal(tf.stack([tf.shape(x)[0], self.code_length]), name='epsilon')
+        code = tf.add(mean, epsilon * std, name='code')
+
+        output = _decoder(code)
 
         optimizer =self.optimizer
         optimizer.learning_rate = self.learning_rate
 
+        model = tf.keras.Model(inputs=input, outputs=output)
         model.compile(optimizer=optimizer, loss=self.loss_function, metrics=self.metrics)
-        print(model.summary())
         self.model = model
+
+        print(model.summary())
+
+        # Building model which generate code statistics
+        model_code_generator = tf.keras.Model(inputs=input, outputs=code)
+        model_code_generator.build((None, images_shape[0], images_shape[1], images_shape[2]))
+        self.model_code_generator = model_code_generator
+
+        generator_layer_num = 0
+        for cntr, layer in enumerate(model.layers):
+            if layer.name == 'tf_op_layer_code':
+                break
+            generator_layer_num += 1
+
+        # Building model which generate images
+        print(generator_layer_num)
+        model_generator = keras.Sequential(model.layers[generator_layer_num-1:])
+        model_generator.build((None, self.code_length))
+        print(model_generator.summary())
+        self.model_generator = model_generator
 
     ''' This function train model '''
     def train(self, images_train, images_test, epochs=10, batch_size=16, validation_split=0.2):
@@ -115,30 +137,9 @@ class Model():
         print("================================= generating code statistics ===================================")
 
         print("Total samples used to generate code statistics:", sample_size)
-        model = self.model
         images_shape = images[0].shape
 
-        layers_ = [layers.InputLayer(input_shape=images_shape), layers.Reshape((images_shape[0], images_shape[1] * images_shape[2]))]
-#         encoder_layers = [layer.name if 'encoder_layer' in layer.name else None for layer in model.layers]
-#         num_encoder_layers = len(list(filter(lambda x: x, encoder_layers))) * 2 + 3 # 1 Each for (Reshape, Code) layer
-
-        num_encoder_layers = len(layers_) - 1
-        for layer in model.layers:
-            if layer.name == "code":
-                break
-            num_encoder_layers += 1
-
-        layers_.extend(model.layers[:num_encoder_layers])  # Trim all layers except encoder layers
-
-        model_code_generator = keras.Sequential(layers_)
-        model_code_generator.build((None, images_shape[0], images_shape[1], images_shape[2]))
-
-        for layer in model_code_generator.layers:
-            if list(filter(lambda x: x in layer.name, ['flatten', 'reshape', 'max_pooling'])):
-                continue
-            assert all([np.array_equal(layer.get_weights()[0], model.get_layer(layer.name).get_weights()[0]),
-                        np.array_equal(layer.get_weights()[1], model.get_layer(layer.name).get_weights()[1])]),  "%s weights not same" % layer.name
-
+        model_code_generator = self.model_code_generator
         print(model_code_generator.summary())
 
         codes = model_code_generator.predict(images[:sample_size], batch_size=batch_size, verbose=False)
@@ -159,15 +160,11 @@ class Model():
         self.code_stats = code_stats
         print("code_stats:", code_stats)
 
-
     ''' This function generate samples based on code statistics '''
     def generate(self, n, batch_size=8):
         print("================================= generating samples ===================================")
         model = self.model
         code_stats = self.code_stats
-
-#         encoder_layers = [layer.name if 'encoder_layer' in layer.name else None for layer in model.layers]
-#         num_encoder_layers = len(list(filter(lambda x: x, encoder_layers))) * 2 + 3 # 1 Each for (Flatten, Reshape, Code) layer
 
         num_encoder_layers = 1
         for layer in model.layers:
@@ -190,6 +187,8 @@ class Model():
     def save(self, modelfile):
         modelfile_tf = "tf_" + modelfile.split('.')[0] + ".h5"
         self.model.save(modelfile_tf)
+        self.model_code_generator.save(modelfile_tf)
+        self.model.save(modelfile_tf)
 
         model = self.model
         metrics = self.metrics
@@ -198,6 +197,8 @@ class Model():
         self.metrics = None
         self.optimizer = None
         self.loss_function = None
+        self.input = None
+        self.code = None
 
         print("Pickle protocol:", pickle.HIGHEST_PROTOCOL)
         with open(modelfile, "wb") as f:

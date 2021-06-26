@@ -2,12 +2,14 @@ from gimmick import constants
 from gimmick.models import autoencoder_dense
 from gimmick.models import autoencoder_lstm
 from gimmick.models import autoencoder_cnn
+from gimmick.models import autoencoder_cnn_variational
 import tensorflow as tf
 
 algo_mapping = {
     'autoencoder_dense': autoencoder_dense.Model(),
     'autoencoder_lstm': autoencoder_lstm.Model(),
-    'autoencoder_cnn': autoencoder_cnn.Model()
+    'autoencoder_cnn': autoencoder_cnn.Model(),
+    'autoencoder_cnn_variational': autoencoder_cnn_variational.Model()
 }
 
 optimizer_mapping = {

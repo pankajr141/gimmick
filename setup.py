@@ -22,6 +22,6 @@ setuptools.setup(
     install_requires=[
         'tensorflow>=2.3.1',
         'matplotlib',
-        'scikit-learn==0.24.2'
+        'scikit-learn>=0.24.2'
     ],
 )

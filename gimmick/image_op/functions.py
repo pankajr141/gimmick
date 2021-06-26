@@ -1,4 +1,9 @@
+""" This module provide common utility function on images which are used across different sections
+"""
 def convert_2dto3d(images):
+    """ Function convert a list of 2D images to list of 3D images
+    """
+
     print("convering images to 3d: shape before convert_2dto3d", images.shape)
     if len(images.shape) == 3:
         images = images.reshape(images.shape[0], images.shape[1], images.shape[2], 1)

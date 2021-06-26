@@ -29,12 +29,12 @@ def plot_images(images, n_col=8):
     plt.savefig(colored_image)
     Image.open(colored_image).convert('L').save(gray_image)
 
-def main():  
-    
+def main():
+
     digits = datasets.load_digits()
-    images = digits.images  # It contains roughly 1800 images of shape 8 x 8    
+    images = digits.images  # It contains roughly 1800 images of shape 8 x 8
     # All images will be reshaped to nearest power of 2
-    
+
 #     import cv2
 #     import numpy as np
 #     import tensorflow as tf
@@ -42,16 +42,16 @@ def main():
 #     images = np.array([cv2.resize(x, (32, 32)) for x in images])
 
     #plot_images(images[0:16], n_col=8)
-    
-    modelfile = "dense_model.pkl"
-    model = gimmick.learn(images, algo='autoencoder_cnn', epochs=5, samples_for_code_statistics=512)
 
-#     model.save(modelfile)
-#     model = gimmick.load(modelfile)
+    modelfile = "autoencoder_cnn_variational.pkl"
+    model = gimmick.learn(images, algo='autoencoder_cnn_variational', epochs=1, samples_for_code_statistics=512)
 
-    images_gen = model.generate(16, batch_size=8) # Generate N random samples/images
+    model.save(modelfile)
+    #model = gimmick.load(modelfile)
+
+    #images_gen = model.generate(16, batch_size=8) # Generate N random samples/images
     print(images_gen.shape)
-    
+
     #plot_images(images_gen, n_col=8)
 
 if __name__ == "__main__":
