@@ -46,9 +46,10 @@ def main():
 
     plot_images(images[0:16], n_col=8)
     print(images.shape)
-    modelfile = "autoencoder_cnn_variational.pkl"
-    # model = gimmick.learn(images, algo='autoencoder_cnn_variational', epochs=500, code_length=16, samples_for_code_statistics=512)
-    # model.save(modelfile)
+
+    modelfile = "autoencoder_cnn_variational.zip"
+    model = gimmick.learn(images, algo='autoencoder_cnn_variational', epochs=10, code_length=16, samples_for_code_statistics=512)
+    model.save(modelfile)
 
     model = gimmick.load(modelfile)
     codes = model.prepare_code_statistics(images, sample_size=512)

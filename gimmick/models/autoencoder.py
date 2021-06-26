@@ -1,9 +1,11 @@
+import os
+import pickle
+import numpy as np
+import tensorflow as tf
 from datetime import datetime
 from gimmick import constants
-import tensorflow as tf
-import numpy as np
-import pickle
 from tensorflow.keras.callbacks import ModelCheckpoint
+from zipfile import ZipFile
 
 class AutoEncoder():
     def __init__(self, learning_rate=None, optimizer=None, optimizer_keys=None, loss_function=None, loss_function_keys=None, metrics=None, metrics_keys=None,
@@ -112,6 +114,10 @@ class AutoEncoder():
         return images_generated
 
     def save(self, modelfile):
+        if not modelfile.endswith('.zip'):
+            raise Exception('modelfile must ends with .zip as extention')
+
+        modelfile_cls = "tf_" + modelfile.split('.')[0] + ".pkl"
         modelfile_tf = "tf_" + modelfile.split('.')[0] + ".h5"
         modelfile_ig_tf = "tf_" + modelfile.split('.')[0] + "_ig.h5"
         modelfile_cg_tf = "tf_" + modelfile.split('.')[0] + "_cg.h5"
@@ -135,10 +141,22 @@ class AutoEncoder():
         self.code = None
 
         print("Pickle protocol:", pickle.HIGHEST_PROTOCOL)
-        with open(modelfile, "wb") as f:
+        with open(modelfile_cls, "wb") as f:
             pickle.dump(self, f, pickle.HIGHEST_PROTOCOL)
 
         self.model = model
         self.model_image_generator = model_image_generator
         self.model_code_generator = model_code_generator
         self.metrics = metrics
+
+        # Create a ZipFile Object
+        with ZipFile(modelfile, 'w') as zipobj:
+           # Add multiple files to the zip
+           zipobj.write(modelfile_cls)
+           zipobj.write(modelfile_tf)
+           zipobj.write(modelfile_ig_tf)
+           zipobj.write(modelfile_cg_tf)
+        os.remove(modelfile_cls)
+        os.remove(modelfile_tf)
+        os.remove(modelfile_ig_tf)
+        os.remove(modelfile_cg_tf)
