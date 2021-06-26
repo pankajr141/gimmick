@@ -4,25 +4,12 @@ import numpy as np
 import tensorflow as tf
 from tensorflow import keras
 from tensorflow.keras import layers
-from tensorflow.keras.callbacks import ModelCheckpoint
 from datetime import datetime
 from gimmick import constants
+from gimmick.models.autoencoder import AutoEncoder
 
 
-class Model():
-    def __init__(self, learning_rate=None, optimizer=None, optimizer_keys=None, loss_function=None, loss_function_keys=None, metrics=None, metrics_keys=None,
-                 code_length=8, num_encoder_layers=-1, num_decoder_layers=-1):
-        self.learning_rate = learning_rate
-        self.optimizer = optimizer
-        self.loss_function = loss_function
-        self.metrics = metrics
-        self.num_encoder_layers = num_encoder_layers
-        self.num_decoder_layers = num_decoder_layers
-        self.code_length = code_length
-
-        self.loss_function_keys = loss_function_keys
-        self.optimizer_keys = optimizer_keys
-        self.metrics_keys = metrics_keys
+class Model(AutoEncoder):
 
     ''' This function build model graph  '''
     def build_model_graph(self, images_shape):
@@ -90,118 +77,41 @@ class Model():
         print(model.summary())
         self.model = model
 
-    ''' This function train model '''
-    def train(self, images_train, images_test, epochs=10, batch_size=16, validation_split=0.2):
 
-        startime = datetime.now()
+        def _code_generator_model():
 
-        checkpoint = ModelCheckpoint(constants.DEFAULT_TF_MODELFILE, verbose=0, monitor='val_loss', save_best_only=True, mode='auto')
-        early_stopping = tf.keras.callbacks.EarlyStopping(monitor='val_loss', patience=5, restore_best_weights=True)
+            layers_ = [layers.InputLayer(input_shape=images_shape), layers.Reshape((images_shape[0], images_shape[1] * images_shape[2]))]
 
-        print("================================= Training ===================================")
-        model = self.model
-        model.fit(images_train, images_train, batch_size=batch_size, epochs=epochs, validation_split=validation_split,
-                  callbacks=[checkpoint, early_stopping], shuffle=True)
+            num_encoder_layers = len(layers_) - 1
+            for layer in model.layers:
+                if layer.name == "code":
+                    break
+                num_encoder_layers += 1
 
-        model.save(constants.DEFAULT_TF_MODELFILE) # Save Best model to disk
-        print("Total Training time:", datetime.now() - startime)
+            layers_.extend(model.layers[:num_encoder_layers])  # Trim all layers except encoder layers
 
-        print("================================= Evaluating ===================================")
-        model.evaluate(images_test, images_test, batch_size=batch_size, verbose=True)
+            model_code_generator = keras.Sequential(layers_)
+            model_code_generator.build((None, images_shape[0], images_shape[1], images_shape[2]))
 
-    def prepare_code_statistics(self, images, batch_size=8, sample_size=64):
-        ''' This function return the statistics for intermedite highly condence space of N Dimention
-        which can be used to generate similar samples '''
-        print("================================= generating code statistics ===================================")
+            for layer in model_code_generator.layers:
+                if list(filter(lambda x: x in layer.name, ['flatten', 'reshape', 'max_pooling'])):
+                    continue
+                assert all([np.array_equal(layer.get_weights()[0], model.get_layer(layer.name).get_weights()[0]),
+                            np.array_equal(layer.get_weights()[1], model.get_layer(layer.name).get_weights()[1])]),  "%s weights not same" % layer.name
 
-        print("Total samples used to generate code statistics:", sample_size)
-        model = self.model
-        images_shape = images[0].shape
+            print(model_code_generator.summary())
+            return model_code_generator
+        self.model_code_generator = _code_generator_model()
 
-        layers_ = [layers.InputLayer(input_shape=images_shape), layers.Reshape((images_shape[0], images_shape[1] * images_shape[2]))]
-#         encoder_layers = [layer.name if 'encoder_layer' in layer.name else None for layer in model.layers]
-#         num_encoder_layers = len(list(filter(lambda x: x, encoder_layers))) * 2 + 3 # 1 Each for (Reshape, Code) layer
+        def _image_generator_model():
+            num_encoder_layers = 1
+            for layer in model.layers:
+                if layer.name == "code":
+                    break
+                num_encoder_layers += 1
 
-        num_encoder_layers = len(layers_) - 1
-        for layer in model.layers:
-            if layer.name == "code":
-                break
-            num_encoder_layers += 1
-
-        layers_.extend(model.layers[:num_encoder_layers])  # Trim all layers except encoder layers
-
-        model_code_generator = keras.Sequential(layers_)
-        model_code_generator.build((None, images_shape[0], images_shape[1], images_shape[2]))
-
-        for layer in model_code_generator.layers:
-            if list(filter(lambda x: x in layer.name, ['flatten', 'reshape', 'max_pooling'])):
-                continue
-            assert all([np.array_equal(layer.get_weights()[0], model.get_layer(layer.name).get_weights()[0]),
-                        np.array_equal(layer.get_weights()[1], model.get_layer(layer.name).get_weights()[1])]),  "%s weights not same" % layer.name
-
-        print(model_code_generator.summary())
-
-        codes = model_code_generator.predict(images[:sample_size], batch_size=batch_size, verbose=False)
-        print("codes shape:", codes.shape)
-
-        assert codes.shape[1] == self.code_length, "code_length_passed (%d) and code_length_generated (%d) does not match" % (self.code_length, codes.shape[1])
-
-        print(codes[0].tolist())
-        print(codes[1].tolist())
-        print(codes[2].tolist())
-
-        code_stats = {
-            "min" : np.min(codes),
-            "max" : np.max(codes),
-            "mean": np.mean(codes),
-            "std": np.std(codes)
-        }
-        self.code_stats = code_stats
-        print("code_stats:", code_stats)
-
-
-    ''' This function generate samples based on code statistics '''
-    def generate(self, n, batch_size=8):
-        print("================================= generating samples ===================================")
-        model = self.model
-        code_stats = self.code_stats
-
-#         encoder_layers = [layer.name if 'encoder_layer' in layer.name else None for layer in model.layers]
-#         num_encoder_layers = len(list(filter(lambda x: x, encoder_layers))) * 2 + 3 # 1 Each for (Flatten, Reshape, Code) layer
-
-        num_encoder_layers = 1
-        for layer in model.layers:
-            if layer.name == "code":
-                break
-            num_encoder_layers += 1
-
-        # Building model
-        model_generator = keras.Sequential(model.layers[num_encoder_layers:])
-        model_generator.build((None, self.code_length))
-        print(model_generator.summary())
-
-        inputs  = np.random.normal(code_stats['mean'], code_stats['std'], (n, self.code_length))  # Random samples
-
-        image_generated = model_generator.predict(inputs, batch_size=batch_size, verbose=False).astype(np.uint8)
-        image_generated[image_generated > 255] = 255
-        image_generated[image_generated < 0] = 0
-        return image_generated
-
-    def save(self, modelfile):
-        modelfile_tf = "tf_" + modelfile.split('.')[0] + ".h5"
-        self.model.save(modelfile_tf)
-
-        model = self.model
-        metrics = self.metrics
-
-        self.model = None
-        self.metrics = None
-        self.optimizer = None
-        self.loss_function = None
-
-        print("Pickle protocol:", pickle.HIGHEST_PROTOCOL)
-        with open(modelfile, "wb") as f:
-            pickle.dump(self, f, pickle.HIGHEST_PROTOCOL)
-
-        self.model = model
-        self.metrics = metrics
+            # Building model
+            model_image_generator = keras.Sequential(model.layers[num_encoder_layers:])
+            model_image_generator.build((None, self.code_length))
+            return model_image_generator
+        self.model_image_generator = _image_generator_model()
