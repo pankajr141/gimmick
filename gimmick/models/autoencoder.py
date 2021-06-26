@@ -42,7 +42,7 @@ class AutoEncoder():
         print("================================= Evaluating ===================================")
         model.evaluate(images_test, images_test, batch_size=batch_size, verbose=True)
 
-    def prepare_code_statistics(self, images, batch_size=8, sample_size=64):
+    def prepare_code_statistics(self, images, batch_size=8, sample_size=64, print_model=False):
         ''' This function return the statistics for intermedite highly condence space of N Dimention
         which can be used to generate similar samples '''
         print("================================= generating code statistics ===================================")
@@ -51,42 +51,65 @@ class AutoEncoder():
         images_shape = images[0].shape
 
         model_code_generator = self.model_code_generator
-        print(model_code_generator.summary())
+        if print_model:
+            print(model_code_generator.summary())
 
         codes = model_code_generator.predict(images[:sample_size], batch_size=batch_size, verbose=False)
         print("codes shape:", codes.shape)
 
         assert codes.shape[1] == self.code_length, "code_length_passed (%d) and code_length_generated (%d) does not match" % (self.code_length, codes.shape[1])
 
-        print(codes[0].tolist())
-        print(codes[1].tolist())
-        print(codes[2].tolist())
+        print('code 0 =>', codes[0].tolist())
+        print('code 1 =>', codes[1].tolist())
+        print('code 2 =>', codes[2].tolist())
 
         code_stats = {
-            "min" : np.min(codes),
-            "max" : np.max(codes),
-            "mean": np.mean(codes),
-            "std": np.std(codes)
+            # "min" : np.min(codes, axis=0),
+            # "max" : np.max(codes, axis=0),
+            "mean": np.mean(codes, axis=0),
+            "std": np.std(codes, axis=0)
         }
         self.code_stats = code_stats
         print("code_stats:", code_stats)
-
+        return codes
 
     ''' This function generate samples based on code statistics '''
-    def generate(self, n, batch_size=8):
+    def generate(self, n, codes=None, batch_size=8, print_model=False):
         print("================================= generating samples ===================================")
         code_stats = self.code_stats
 
+        # print(code_stats)
         # Building model
+
         model_image_generator = self.model_image_generator
-        print(model_image_generator.summary())
+        if print_model:
+            print(model_image_generator.summary())
 
-        inputs  = np.random.normal(code_stats['mean'], code_stats['std'], (n, self.code_length))  # Random samples
+        if codes is not None:
+            inputs  = codes[:n]
+        else:
+            # inputs = np.random.normal(code_stats['mean'], code_stats['std'], (n, self.code_length))  # Random samples
+            inputs = []
+            for i in range(self.code_length):
+                inputs.append(np.random.normal(code_stats['mean'][i], code_stats['std'][i], (n,1)))
+            inputs = np.concatenate(inputs, axis=1)
 
-        image_generated = model_image_generator.predict(inputs, batch_size=batch_size, verbose=False).astype(np.uint8)
-        image_generated[image_generated > 255] = 255
-        image_generated[image_generated < 0] = 0
-        return image_generated
+        images_generated = model_image_generator.predict(inputs, batch_size=batch_size, verbose=False).astype(np.uint8)
+        images_generated[images_generated > 255] = 255
+        images_generated[images_generated < 0] = 0
+        return images_generated
+
+    def reproduce(self, images, batch_size=8):
+        """ This function takes input images and try to reproduce them, mostly used to check model predictive powers.
+
+        Parameters
+        ----------
+        images: list
+            N 3D images, Eg, 512x128x128x3, 1024x64x64x3
+        """
+        images_generated = self.model.predict(images, batch_size=batch_size, verbose=False).astype(np.uint8)
+        images_generated = images_generated.reshape(-1, 8, 8)
+        return images_generated
 
     def save(self, modelfile):
         modelfile_tf = "tf_" + modelfile.split('.')[0] + ".h5"

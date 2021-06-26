@@ -22,6 +22,9 @@ def plot_images(images, n_col=8):
             img = cv2.imread(img)
             img = cv2.cvtColor(img, cv2.COLOR_BGR2RGB)
 #             img = cv2.resize(img, (64, 64))  # Reshaping for visualization
+
+        if len(img.shape) == 3 and img.shape[2] == 1:
+            img = cv2.cvtColor(img, cv2.COLOR_GRAY2RGB)
         ax.imshow(img)
     plt.show()
     colored_image  = 'generated_imgs.png'
@@ -41,18 +44,27 @@ def main():
 #     (images, _), (_, _) = tf.keras.datasets.mnist.load_data()
 #     images = np.array([cv2.resize(x, (32, 32)) for x in images])
 
-    #plot_images(images[0:16], n_col=8)
-
+    plot_images(images[0:16], n_col=8)
+    print(images.shape)
     modelfile = "autoencoder_cnn_variational.pkl"
-    model = gimmick.learn(images, algo='autoencoder_cnn_variational', epochs=1, samples_for_code_statistics=512)
+    # model = gimmick.learn(images, algo='autoencoder_cnn_variational', epochs=500, code_length=16, samples_for_code_statistics=512)
+    # model.save(modelfile)
 
-    model.save(modelfile)
-    #model = gimmick.load(modelfile)
+    model = gimmick.load(modelfile)
+    codes = model.prepare_code_statistics(images, sample_size=512)
+    print(codes[0])
+    images_gen = model.generate(16, batch_size=8) # Generate N random samples/images
 
-    #images_gen = model.generate(16, batch_size=8) # Generate N random samples/images
+    # Test 1 - check if original image can be reproduced by main model
+    # images_gen = model.reproduce(images[0:16])
+
+    # Test 2 - Generate some code and see if generator model can generate image like original
+    # codes = model.prepare_code_statistics(images)
+    # images_gen = model.generate(16, codes=codes, batch_size=8)
+
+    images_gen = images_gen.reshape(-1, 8, 8)
     print(images_gen.shape)
-
-    #plot_images(images_gen, n_col=8)
+    plot_images(images_gen, n_col=8)
 
 if __name__ == "__main__":
     main()
