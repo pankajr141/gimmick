@@ -8,10 +8,10 @@ from gimmick import constants
 from gimmick.models.autoencoder import AutoEncoder
 
 class Model(AutoEncoder):
-    # def __init__(self, **kwargs):
-    #     super().__init__(**kwargs)
+    """ This algorithm uses a CNN based variational autoenocder for learning and generating images.
+    https://en.wikipedia.org/wiki/Variational_autoencoder
+    """
 
-    ''' This function build model graph  '''
     def build_model_graph(self, images_shape):
         print(self.__dict__)
         total_pixels = images_shape[0] * images_shape[1] * images_shape[2]

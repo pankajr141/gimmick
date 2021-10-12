@@ -10,14 +10,8 @@ from gimmick.models.autoencoder import AutoEncoder
 
 
 class Model(AutoEncoder):
-    """ Autoenocoder dense n/w model, this learn the representation of passed inputs during train and generate similar images using N dimentional vector called as code.
-
-        Parameters
-        ----------
-        learning_rate :  float
-            learning rate for training model
-        optimizer :  tensorflow optimizer class
-            optimizer used to train the model
+    """ This algorithm uses a feed forward dense layer model for learning and generating images.
+    https://en.wikipedia.org/wiki/Feedforward_neural_network
     """
 
     def build_model_graph(self, images_shape):
