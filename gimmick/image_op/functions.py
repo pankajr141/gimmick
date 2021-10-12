@@ -1,5 +1,10 @@
 """ This module provide common utility function on images which are used across different sections
 """
+import math
+from PIL import Image
+from matplotlib import pyplot as plt
+from mpl_toolkits.axes_grid1 import ImageGrid
+
 def convert_2dto3d(images):
     """ Function convert a list of 2D images to list of 3D images
     """
@@ -9,6 +14,35 @@ def convert_2dto3d(images):
         images = images.reshape(images.shape[0], images.shape[1], images.shape[2], 1)
     print("shape after convert_2dto3d", images.shape)
     return images
+
+def plot_images(images, n_col=8, outputfile_path='img.png'):
+    n_row = int(math.ceil(len(images) / n_col))
+    fig = plt.figure(figsize=(6., 6.))
+
+    grid = ImageGrid(fig, 111,  # similar to subplot(111)
+                 nrows_ncols=(n_row, n_col),  # creates 2x2 grid of axes
+                 axes_pad=0.0,  # pad between axes in inch.
+    )
+
+    import cv2
+    for ax, img in zip(grid, images):
+        # Iterating over the grid returns the Axes.
+        if type(img) == str and os.path.exists(img):
+            img = cv2.imread(img)
+            img = cv2.cvtColor(img, cv2.COLOR_BGR2RGB)
+#             img = cv2.resize(img, (64, 64))  # Reshaping for visualization
+
+        if len(img.shape) == 3 and img.shape[2] == 1:
+            img = cv2.cvtColor(img, cv2.COLOR_GRAY2RGB)
+        ax.imshow(img)
+    plt.show()
+
+    colored_image  = outputfile_path
+
+    gray_image  = 'gray_' + outputfile_path
+    plt.savefig(colored_image)
+    Image.open(colored_image).convert('L').save(gray_image)
+    return colored_image, gray_image
 
 if __name__ == "__main__":
     from sklearn import datasets
