@@ -58,8 +58,8 @@ def main():
     plot_images(images[0:16], n_col=8, name='img_orig.png')
     print(images.shape)
 
-    modelfile = "autoencoder_dense.zip"
-    model = gimmick.learn(images, algo='autoencoder_dense', epochs=500, code_length=16, samples_for_code_statistics=512)
+    modelfile = "gan.zip"
+    model = gimmick.learn(images, algo='gan', epochs=10, code_length=16, samples_for_code_statistics=512)
     model.save(modelfile)
 
     model = gimmick.load(modelfile)

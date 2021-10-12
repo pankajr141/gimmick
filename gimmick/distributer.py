@@ -22,6 +22,8 @@ from gimmick import mapping
 from gimmick.image_op import functions as image_functions
 from sklearn.model_selection import train_test_split
 
+algo = list(mapping.algo_mapping.keys())
+
 def learn(images, algo, code_length=8, num_encoder_layers='auto', num_decoder_layers='auto', epochs=10,
           batch_size=16, optimizer='adam', learning_rate=0.001, loss_function='mse', metrics=['mse'],
           samples_for_code_statistics=64):
@@ -48,9 +50,9 @@ def learn(images, algo, code_length=8, num_encoder_layers='auto', num_decoder_la
     metrics: int
         Default ['mse'], list of metrics to be printed while training
     num_encoder_layer: int
-        Default 'auto', number of layers to be used in encoder
+        Default 'auto', number of layers to be used in encoder, applicable for autoenocder
     num_decoder_layers: int
-        Default 'auto', number of layers to be used in decoder
+        Default 'auto', number of layers to be used in decoder, applicable for autoenocder
     samples_for_code_statistics: int
         Default 64, samples to be used to generate code statistics
 
@@ -81,24 +83,33 @@ def learn(images, algo, code_length=8, num_encoder_layers='auto', num_decoder_la
     if list(filter(lambda x: x == None, metrics)):
         raise Exception("One or more of the metrics passed is not a valid metrics, possible values are %s" % (mapping.metrics_mapping.keys()))
 
+    if code_length % 4 != 0:
+        raise Excpetion("code_length must be a multiple of 4")
     print("===================================================================")
     print("Algo:\t\t", model)
     print("optimizer:\t", optimizer)
     print("loss_function:\t", loss_function)
     print("metrics:\t", metrics)
     print("Epochs:\t\t", epochs)
+
     print("batch_size:\t", batch_size)
     print("learning_rate:\t", learning_rate)
 
     print("===================================================================")
-
     ## Write code to normalize image to nearest 2 power, min 8x8x1
     images = image_functions.convert_2dto3d(images)
 
-    model.__init__(learning_rate=learning_rate, optimizer=optimizer, optimizer_keys=optimizer_keys,
-                   loss_function=loss_function, loss_function_keys=loss_function_keys,
-                   metrics=metrics, metrics_keys=metrics_keys,code_length=code_length,
-                   num_encoder_layers=num_encoder_layers, num_decoder_layers=num_decoder_layers)
+    if algo.startswith('gan'):
+        model.__init__(learning_rate=learning_rate, optimizer=optimizer, optimizer_keys=optimizer_keys,
+                       loss_function=loss_function, loss_function_keys=loss_function_keys,
+                       metrics=metrics, metrics_keys=metrics_keys,code_length=code_length,
+                       num_generator_layers=num_encoder_layers, num_discriminator_layers=num_decoder_layers)
+    else:
+        model.__init__(learning_rate=learning_rate, optimizer=optimizer, optimizer_keys=optimizer_keys,
+                       loss_function=loss_function, loss_function_keys=loss_function_keys,
+                       metrics=metrics, metrics_keys=metrics_keys,code_length=code_length,
+                       num_encoder_layers=num_encoder_layers, num_decoder_layers=num_decoder_layers)
+
     model.build_model_graph(images[0].shape)
 
     images_train, images_test = train_test_split(images, test_size=0.3, shuffle=True)

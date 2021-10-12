@@ -31,7 +31,6 @@ class Model(AutoEncoder):
         """
         total_pixels = images_shape[0] * images_shape[1] * images_shape[2]
 
-
         num_encoder_layers = int(math.log(images_shape[0], 2)) - 2 if self.num_encoder_layers == 'auto' else int(self.num_encoder_layers)
         num_encoder_layers = max(num_encoder_layers, 3)
 

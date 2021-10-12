@@ -1,0 +1,18 @@
+Instruction for various sub modules
+====================================
+
+1.  Use gimmick to generate modules
+
+  Refer
+  a.  sample.py - code to get started using gimmick
+
+2.  Documentation generator
+  a.  cd docs
+      make html
+
+3.  Unit test
+  a.  test_module.py - Run testcases
+
+4.  Interactive UserInterface
+  a.  streamlit_app.py
+      streamlit run streamlit_app.py
