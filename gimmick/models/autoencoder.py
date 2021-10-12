@@ -199,10 +199,22 @@ class AutoEncoder():
         if not modelfile.endswith('.zip'):
             raise Exception('modelfile must ends with .zip as extention')
 
+        if os.path.exists(modelfile):
+            os.remove(modelfile)
+
         modelfile_cls = "tf_" + modelfile.split('.')[0] + ".pkl"
         modelfile_tf = "tf_" + modelfile.split('.')[0] + ".h5"
         modelfile_ig_tf = "tf_" + modelfile.split('.')[0] + "_ig.h5"
         modelfile_cg_tf = "tf_" + modelfile.split('.')[0] + "_cg.h5"
+
+        if os.path.exists(modelfile_cls):
+            os.remove(modelfile_cls)
+        if os.path.exists(modelfile_tf):
+            os.remove(modelfile_tf)
+        if os.path.exists(modelfile_ig_tf):
+            os.remove(modelfile_ig_tf)
+        if os.path.exists(modelfile_cg_tf):
+            os.remove(modelfile_cg_tf)
 
         self.model.save(modelfile_tf)
         self.model_image_generator.save(modelfile_ig_tf)
@@ -238,6 +250,7 @@ class AutoEncoder():
            zipobj.write(modelfile_tf)
            zipobj.write(modelfile_ig_tf)
            zipobj.write(modelfile_cg_tf)
+
         os.remove(modelfile_cls)
         os.remove(modelfile_tf)
         os.remove(modelfile_ig_tf)

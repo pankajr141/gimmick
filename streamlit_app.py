@@ -4,6 +4,7 @@ import cv2
 import streamlit as st
 from datetime import datetime
 from gimmick import mapping
+from app import backend
 import subprocess
 
 @st.cache(allow_output_mutation=True)
@@ -31,7 +32,7 @@ def model_train():
         ("autoencoder_dense", "autoencoder_lstm", "autoencoder_cnn", "autoencoder_cnn_variational")
     )
 
-    latent_dimention = st.sidebar.number_input('latent_dimention', 8)
+    latent_dimension = st.sidebar.number_input('latent_dimension', 8)
     num_encoder_layers = st.sidebar.number_input('num_encoder_layers', -1)
     num_decoder_layers = st.sidebar.number_input('num_decoder_layers', -1)
     optimizer = st.sidebar.selectbox("optimizer", tuple(mapping.optimizer_mapping.keys()))
@@ -45,22 +46,40 @@ def model_train():
     modelfile = st.text_input('Output model path', 'model_{}.zip'.format(model_type))
     isTrain = st.button('Train')
     if isTrain:
-        st.write('Training model')
+        st.write('Training started ...')
+        backend.train_model(modelfile, model_type, latent_dimension, num_encoder_layers, num_decoder_layers, optimizer, metrics,
+                            loss_function, epochs, batch_size, learning_rate, samples_for_code_statistics)
+        st.write("Training finished ...")
 
 def generate_images():
-    code_length = st.sidebar.number_input('Latent Dimention Size', 2, 32, 4)
+
+    modelfiles = list(filter(lambda x: x.endswith('zip'), os.listdir('.')))
+    modelfile = st.selectbox('Output model path', modelfiles)
+
+    model_details = backend.get_model_details(modelfile)
+
+    print(model_details)
+    code_length = st.sidebar.number_input('Latent Dimention Size', 2, 32, model_details['code_length'])
 
     code_values = [0] * code_length
 
-    code_slide_expander = st.sidebar.beta_expander('Latent Dimention Values')
+    code_slide_expander = st.sidebar.expander('Latent Dimention Values')
     with code_slide_expander:
         for i in range(code_length):
-            code_values[i] = st.slider('', 0.0, 100.0, key='code_%d' % i)
+            min_val = model_details['code_stats']['mean'][i] - 3 * model_details['code_stats']['std'][i]
+            max_val = model_details['code_stats']['mean'][i] + 3 * model_details['code_stats']['std'][i]
+            code_values[i] = st.slider('', float(min_val), float(max_val), key='code_%d' % i)
     st.write(', '.join([str(x) for x in code_values]))
 
-    isGenerate = st.button('Generate')
+    col1, col2 = st.columns(2)
+
+    isGenerate = col1.button('Generate')
+    random = col2.checkbox('Random')
     if isGenerate:
         st.write('Generating Images')
+        image = backend.generate_image(modelfile, code_values, random)
+        st.image(image, caption='code: {}'.format(",".join([str(x) for x in code_values])))
+
 
 def main():
     # st.beta_set_page_config(layout="wide")

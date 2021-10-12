@@ -14,5 +14,4 @@ Instruction for various sub modules
     # pytest test_module.py - Run testcases
 
 4.  Interactive UserInterface
-  a.  streamlit_app.py
-      streamlit run streamlit_app.py
+    streamlit run streamlit_app.py
