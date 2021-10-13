@@ -27,4 +27,3 @@ def test_autoencoder_dense():
     images_gen = model.generate(8, batch_size=8) # Generate N random samples/images
     assert images_gen.shape[0] == 8, "images generated != 8"
     os.remove(modelfile)
-    shutil.rmtree('model.tf')

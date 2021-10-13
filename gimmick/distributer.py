@@ -53,7 +53,7 @@ def learn(images, algo, code_length=8, num_encoder_layers='auto', num_decoder_la
     """
 
     print("Number sample:", images.shape[0], "Image shape:", images[0].shape)
-    
+
     model = mapping.algo_mapping.get(algo, None)
     if not model:
         raise Exception("Algo not implement/present possible values for also are %s" % (mapping.algo_mapping.keys()))
@@ -74,7 +74,7 @@ def learn(images, algo, code_length=8, num_encoder_layers='auto', num_decoder_la
         raise Exception("One or more of the metrics passed is not a valid metrics, possible values are %s" % (mapping.metrics_mapping.keys()))
 
     if code_length % 4 != 0:
-        raise Excpetion("code_length must be a multiple of 4")
+        raise Exception("code_length must be a multiple of 4")
     print("===================================================================")
     print("Algo:\t\t", model)
     print("optimizer:\t", optimizer)

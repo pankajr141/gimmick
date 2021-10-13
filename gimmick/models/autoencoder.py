@@ -97,7 +97,7 @@ class AutoEncoder():
 
     def generate_code(self, images, batch_size=8, print_model=False):
         image_shape = images[0].shape
-        if image_shape != self.image_shape:
+        if image_shape[0] != self.image_shape[0] and image_shape[1] != self.image_shape[1] :
             raise Exception("Please pass images with same dimention as passed during training", str(self.image_shape))
 
         model_code_generator = self.model_code_generator
@@ -125,7 +125,7 @@ class AutoEncoder():
 
         print("Total samples used to generate code statistics:", sample_size)
         image_shape = images[0].shape
-        if image_shape != self.image_shape:
+        if image_shape[0] != self.image_shape[0] and image_shape[1] != self.image_shape[1] :
             raise Exception("Please pass images with same dimention as passed during training", str(self.image_shape))
 
         model_code_generator = self.model_code_generator
