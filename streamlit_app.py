@@ -99,7 +99,7 @@ def generate_images():
     modelfile = st.selectbox('Output model path', modelfiles)
 
     model_details = backend.get_model_details(modelfile)
-    code_length = st.sidebar.number_input('Latent Dimention Size', 2, 32, model_details['code_length'])
+    code_length = st.sidebar.number_input('Latent Dimention Size', 2, 128, model_details['code_length'])
     code_values = [0] * code_length
 
     code_slide_expander = st.sidebar.expander('Latent Dimention Values')
