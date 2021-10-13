@@ -1,6 +1,8 @@
 """ This module provide common utility function on images which are used across different sections
 """
+import cv2
 import math
+import numpy as np
 from PIL import Image
 from matplotlib import pyplot as plt
 from mpl_toolkits.axes_grid1 import ImageGrid
@@ -43,6 +45,16 @@ def plot_images(images, n_col=8, outputfile_path='img.png'):
     plt.savefig(colored_image)
     Image.open(colored_image).convert('L').save(gray_image)
     return colored_image, gray_image
+
+def read_images_from_disk(trainig_files):
+    images = [cv2.imread(x) for x in trainig_files]
+    images = np.array(images)
+    return images
+
+def rescale_images(images, img_width, img_height, img_channels):
+    images = [cv2.resize(x, (img_width, img_height)) for x in images]  # Reshaping for visualization
+    images = np.array(images)
+    return images
 
 if __name__ == "__main__":
     from sklearn import datasets

@@ -1,5 +1,6 @@
 import os
 import pickle
+import shutil
 import numpy as np
 import tensorflow as tf
 from datetime import datetime
@@ -78,6 +79,7 @@ class AutoEncoder():
         """
 
         startime = datetime.now()
+        self.image_shape = images_train[0].shape
 
         checkpoint = ModelCheckpoint(constants.DEFAULT_TF_MODELFILE, verbose=0, monitor='val_loss', save_best_only=True, mode='auto')
         early_stopping = tf.keras.callbacks.EarlyStopping(monitor='val_loss', patience=5, restore_best_weights=True)
@@ -92,6 +94,17 @@ class AutoEncoder():
 
         print("================================= Evaluating ===================================")
         model.evaluate(images_test, images_test, batch_size=batch_size, verbose=True)
+
+    def generate_code(self, images, batch_size=8, print_model=False):
+        image_shape = images[0].shape
+        if image_shape != self.image_shape:
+            raise Exception("Please pass images with same dimention as passed during training", str(self.image_shape))
+
+        model_code_generator = self.model_code_generator
+        if print_model:
+            print(model_code_generator.summary())
+        codes = model_code_generator.predict(images, batch_size=batch_size, verbose=False)
+        return codes
 
     def prepare_code_statistics(self, images, batch_size=8, sample_size=64, print_model=False):
         """ This function return the statistics for intermedite highly condence space of N Dimention
@@ -111,7 +124,9 @@ class AutoEncoder():
         print("================================= generating code statistics ===================================")
 
         print("Total samples used to generate code statistics:", sample_size)
-        images_shape = images[0].shape
+        image_shape = images[0].shape
+        if image_shape != self.image_shape:
+            raise Exception("Please pass images with same dimention as passed during training", str(self.image_shape))
 
         model_code_generator = self.model_code_generator
         if print_model:
@@ -255,3 +270,8 @@ class AutoEncoder():
         os.remove(modelfile_tf)
         os.remove(modelfile_ig_tf)
         os.remove(modelfile_cg_tf)
+
+        model_dir = "model.tf"
+        if os.path.exists(model_dir):
+            print("Removing old model directory:", model_dir)
+            shutil.rmtree(model_dir)

@@ -53,7 +53,7 @@ def learn(images, algo, code_length=8, num_encoder_layers='auto', num_decoder_la
     """
 
     print("Number sample:", images.shape[0], "Image shape:", images[0].shape)
-
+    
     model = mapping.algo_mapping.get(algo, None)
     if not model:
         raise Exception("Algo not implement/present possible values for also are %s" % (mapping.algo_mapping.keys()))
