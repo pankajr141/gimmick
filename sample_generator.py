@@ -55,11 +55,11 @@ def main():
     #images = _dataset_digits()
     images = _dataset_mnist()
 
-    plot_images(images[0:16], n_col=8, name='img_orig.png')
+    #plot_images(images[0:16], n_col=8, name='img_orig.png')
     print(images.shape)
 
     modelfile = "gan.zip"
-    model = gimmick.learn(images, algo='gan', epochs=10, code_length=16, samples_for_code_statistics=512)
+    model = gimmick.learn(images, algo='gan', epochs=10, code_length=8, samples_for_code_statistics=512, loss_function='binary_crossentropy')
     model.save(modelfile)
 
     model = gimmick.load(modelfile)
