@@ -108,5 +108,6 @@ def learn(images, algo, code_length=8, num_encoder_layers='auto', num_decoder_la
     print("Test:", len(images_test.shape))
 
     model.train(images_train, images_test, epochs=epochs, batch_size=batch_size, validation_split=0.2)
-    model.prepare_code_statistics(images_train, batch_size=batch_size, sample_size=samples_for_code_statistics)
+    if not algo.startswith('gan'):
+        model.prepare_code_statistics(images_train, batch_size=batch_size, sample_size=samples_for_code_statistics)
     return model

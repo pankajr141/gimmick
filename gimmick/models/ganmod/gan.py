@@ -8,6 +8,8 @@ from tensorflow.keras import layers
 from tensorflow.keras.callbacks import ModelCheckpoint
 from tqdm import tqdm
 from datetime import datetime
+from sklearn.model_selection import train_test_split
+
 
 class Generator():
     def __init__(self, optimizer, learning_rate, loss_function, metrics, num_layers=None):
@@ -79,6 +81,7 @@ class Discriminator():
         for i in range(num_layers, 0, -1):
             model.add(layers.Dense(hidden_dim * i, name="discriminator_layer_" + str(i)))
             model.add(tf.keras.layers.LeakyReLU())
+            model.add(layers.Dropout(0.3))
 
         model.add(layers.Dense(1))
         #model.add(layers.Activation('sigmoid'))
@@ -117,7 +120,7 @@ class Model():
         print("discriminator:", self.discriminator)
 
     @tf.function
-    def train_step(self, images, code_length, batch_size):
+    def train_step(self, images, code_length, batch_size, eval=False):
 
         def discriminator_loss(pred_real, pred_fake):
             real_loss = self.loss_function(tf.ones_like(pred_real), pred_real) # compares discriminator's predictions on real images to an array of 1s,
@@ -140,58 +143,66 @@ class Model():
             gen_loss = generator_loss(pred_fake)
             disc_loss = discriminator_loss(pred_real, pred_fake)
 
-        # print("Gen loss:", tf.print(gen_loss), "Disc loss:", disc_loss)
-        gradients_of_generator = gen_tape.gradient(gen_loss, self.generator.model.trainable_variables)
-        gradients_of_discriminator = disc_tape.gradient(disc_loss, self.discriminator.model.trainable_variables)
+        if not eval:
+            gradients_of_generator = gen_tape.gradient(gen_loss, self.generator.model.trainable_variables)
+            gradients_of_discriminator = disc_tape.gradient(disc_loss, self.discriminator.model.trainable_variables)
 
-        self.generator.optimizer.apply_gradients(zip(gradients_of_generator, self.generator.model.trainable_variables))
-        self.discriminator.optimizer.apply_gradients(zip(gradients_of_discriminator, self.discriminator.model.trainable_variables))
-        #print(type(gen_loss))
-        #return gen_loss.numpy(), disc_loss.numpy()
+            self.generator.optimizer.apply_gradients(zip(gradients_of_generator, self.generator.model.trainable_variables))
+            self.discriminator.optimizer.apply_gradients(zip(gradients_of_discriminator, self.discriminator.model.trainable_variables))
         return gen_loss, disc_loss
 
     def train(self, images_train, images_test, epochs=10, batch_size=16, validation_split=0.2):
 
-        # checkpoint1 = ModelCheckpoint(constants.DEFAULT_TF_GENERATOR_MODELFILE, verbose=0, monitor='val_loss', save_best_only=True, mode='auto')
-        # checkpoint2 = ModelCheckpoint(constants.DEFAULT_TF_DISCRIMINATOR_MODELFILE, verbose=0, monitor='val_loss', save_best_only=True, mode='auto')
-        #
         checkpoint = tf.train.Checkpoint(generator_optimizer=self.generator.optimizer, discriminator_optimizer=self.discriminator.optimizer,
                                          generator=self.generator.model,  discriminator=self.discriminator.model)
 
         # early_stopping = tf.keras.callbacks.EarlyStopping(monitor='val_loss', patience=5, restore_best_weights=True)
-
-        train_dataset = tf.data.Dataset.from_tensor_slices(images_train).shuffle(batch_size * 4).batch(batch_size)
-
         print("================================= Training ===================================")
 
         generator = self.generator
         discriminator = self.discriminator
-        code_length = 8
+        code_length = self.code_length
 
-        startime = datetime.now()
-        for i in range(epochs):
+        images_train, images_val = train_test_split(images_train, random_state=0, test_size=validation_split, shuffle=True)
+
+        train_dataset = tf.data.Dataset.from_tensor_slices(images_train).shuffle(batch_size * 4).batch(batch_size)
+        val_dataset = tf.data.Dataset.from_tensor_slices(images_val).shuffle(batch_size * 4).batch(batch_size)
+        test_dataset = tf.data.Dataset.from_tensor_slices(images_test).shuffle(batch_size * 4).batch(batch_size)
+
+        def _epoch(images, dataset, type, eval, epoch=None):
             total_generator_loss = 0
             total_discriminator_loss = 0
-            steps_t = images_train.shape[0] / batch_size
+            steps = images.shape[0] / batch_size
 
-            batch_log = tqdm(total=steps_t, desc="f'epoch: {i}, generator_loss(t): {mean_generator_loss:10.8f}, discriminator_loss(t): {mean_discriminator_loss: 10.8f}'", position=0)
+            batch_log = tqdm(total=steps, position=0)
 
-            for j, image_batch in enumerate(train_dataset):
-                generator_loss, discriminator_loss = self.train_step(image_batch, code_length, batch_size)
+            for j, image_batch in enumerate(dataset):
+                generator_loss, discriminator_loss = self.train_step(image_batch, code_length, batch_size, eval=eval)
 
+                # Adjust weights only when training
                 total_discriminator_loss += K.eval(discriminator_loss)
-                total_generator_loss += K.eval(generator_loss)
+                total_generator_loss  += K.eval(generator_loss)
 
                 mean_generator_loss = total_generator_loss / j
                 mean_discriminator_loss = total_discriminator_loss / j
 
+                checkpoint.save(constants.DEFAULT_TF_CHECKPOINT)
+                
                 batch_log.update(1)
-                batch_log.set_description(f'epoch: {i}, generator_loss(t): {mean_generator_loss:10.8f}, discriminator_loss(t): {mean_discriminator_loss: 10.8f}')
+                if epoch is not None:
+                    batch_log.set_description(f'epoch: {i}, generator_loss({type}): {mean_generator_loss:10.8f}, discriminator_loss({type}): {mean_discriminator_loss: 10.8f}')
+                else:
+                    batch_log.set_description(f'generator_loss({type}): {mean_generator_loss:10.8f}, discriminator_loss({type}): {mean_discriminator_loss: 10.8f}')
+
+        startime = datetime.now()
+        for i in range(epochs):
+            _epoch(images_train, train_dataset, "train", eval=False, epoch=i)
+            _epoch(images_val, val_dataset, "val", eval=True, epoch=i)
+        print("Total Training time:", datetime.now() - startime)
 
             # generator.fit(images_train, images_train, batch_size=batch_size, epochs=1, validation_split=validation_split,
             #       callbacks=[checkpoint, early_stopping], shuffle=True)
         #model.save(constants.DEFAULT_TF_MODELFILE) # Save Best model to disk
-        print("Total Training time:", datetime.now() - startime)
 
         print("================================= Evaluating ===================================")
-        model.evaluate(images_test, images_test, batch_size=batch_size, verbose=True)
+        _epoch(images_val, val_dataset, "test", eval=True)

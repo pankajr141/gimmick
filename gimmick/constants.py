@@ -1,4 +1,5 @@
 DEFAULT_LEARNING_RATE = 0.001
 DEFAULT_TF_MODELFILE = "model.tf"
-DEFAULT_TF_GENERATOR_MODELFILE = "model_generator.tf"
-DEFAULT_TF_DISCRIMINATOR_MODELFILE = "model_discriminator.tf"
+DEFAULT_TF_CHECKPOINT = "checkpoint"
+# DEFAULT_TF_GENERATOR_MODELFILE = "model_generator.tf"
+# DEFAULT_TF_DISCRIMINATOR_MODELFILE = "model_discriminator.tf"

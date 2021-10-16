@@ -59,7 +59,7 @@ def main():
     print(images.shape)
 
     modelfile = "gan.zip"
-    model = gimmick.learn(images, algo='gan', epochs=10, code_length=8, samples_for_code_statistics=512, loss_function='binary_crossentropy')
+    model = gimmick.learn(images[0:400], algo='gan', epochs=1, code_length=8, samples_for_code_statistics=512, loss_function='binary_crossentropy')
     model.save(modelfile)
 
     model = gimmick.load(modelfile)
