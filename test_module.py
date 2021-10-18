@@ -14,7 +14,7 @@ def _load_dataset():
 def test_autoencoder_dense():
     images = _load_dataset()
 
-    modelfile = "autoencoder_dense.pkl"
+    modelfile = "autoencoder_dense.zip"
     model = gimmick.learn(images, algo='autoencoder_dense', epochs=1, code_length=16, samples_for_code_statistics=512)
     model.save(modelfile)
     assert os.path.exists(modelfile), '{} not exists'.format(modelfile)
@@ -27,4 +27,3 @@ def test_autoencoder_dense():
     images_gen = model.generate(8, batch_size=8) # Generate N random samples/images
     assert images_gen.shape[0] == 8, "images generated != 8"
     os.remove(modelfile)
-    shutil.rmtree('model.tf')

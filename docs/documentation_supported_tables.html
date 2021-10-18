@@ -1,0 +1,255 @@
+
+
+<!doctype html>
+
+<html>
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>&lt;no title&gt; &#8212; gimmick 0.2 documentation</title>
+    <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+    <link rel="stylesheet" href="_static/bizstyle.css" type="text/css" />
+    
+    <script id="documentation_options" data-url_root="./" src="_static/documentation_options.js"></script>
+    <script src="_static/jquery.js"></script>
+    <script src="_static/underscore.js"></script>
+    <script src="_static/doctools.js"></script>
+    <script src="_static/bizstyle.js"></script>
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <meta name="viewport" content="width=device-width,initial-scale=1.0" />
+    <!--[if lt IE 9]>
+    <script src="_static/css3-mediaqueries.js"></script>
+    <![endif]-->
+  </head><body>
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="nav-item nav-item-0"><a href="index.html">gimmick 0.2 documentation</a> &#187;</li>
+        <li class="nav-item nav-item-this"><a href="">&lt;no title&gt;</a></li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <table class="colwidths-given docutils align-default" id="id1">
+<caption><span class="caption-text">Algorithms supported</span><a class="headerlink" href="#id1" title="Permalink to this table">¶</a></caption>
+<colgroup>
+<col style="width: 25%" />
+<col style="width: 25%" />
+<col style="width: 50%" />
+</colgroup>
+<thead>
+<tr class="row-odd"><th class="head"><p>Algorithm name</p></th>
+<th class="head"><p>Algorithm Family</p></th>
+<th class="head"><p>Description</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p>autoenocder_dense</p></td>
+<td><p>autoenocder</p></td>
+<td><p>DNN based encoder decoder architecture</p></td>
+</tr>
+<tr class="row-odd"><td><p>autoencoder_lstm</p></td>
+<td><p>autoenocder</p></td>
+<td><p>LSTM based encoder decoder architecture</p></td>
+</tr>
+<tr class="row-even"><td><p>autoencoder_cnn</p></td>
+<td><p>autoenocder</p></td>
+<td><p>CNN based encoder decoder architecture</p></td>
+</tr>
+<tr class="row-odd"><td><p>autoencoder_cnn_variational</p></td>
+<td><p>autoenocder</p></td>
+<td><p>Variational autoenocder based encoder decoder architecture</p></td>
+</tr>
+</tbody>
+</table>
+<table class="colwidths-given docutils align-default" id="id2">
+<caption><span class="caption-text">optimizer supported</span><a class="headerlink" href="#id2" title="Permalink to this table">¶</a></caption>
+<colgroup>
+<col style="width: 25%" />
+<col style="width: 25%" />
+<col style="width: 50%" />
+</colgroup>
+<thead>
+<tr class="row-odd"><th class="head"><p>Optimizer name</p></th>
+<th class="head"><p>Mapped Function</p></th>
+<th class="head"><p>Description</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p>adam</p></td>
+<td><p>tf.keras.optimizers.Adam()</p></td>
+<td></td>
+</tr>
+<tr class="row-odd"><td><p>adamax</p></td>
+<td><p>tf.keras.optimizers.Adamax()</p></td>
+<td></td>
+</tr>
+<tr class="row-even"><td><p>nadam</p></td>
+<td><p>tf.keras.optimizers.Nadam()</p></td>
+<td></td>
+</tr>
+<tr class="row-odd"><td><p>adagrad</p></td>
+<td><p>tf.keras.optimizers.Adagrad()</p></td>
+<td></td>
+</tr>
+<tr class="row-even"><td><p>rmsprop</p></td>
+<td><p>tf.keras.optimizers.RMSprop()</p></td>
+<td></td>
+</tr>
+<tr class="row-odd"><td><p>sgd</p></td>
+<td><p>tf.keras.optimizers.SGD()</p></td>
+<td></td>
+</tr>
+</tbody>
+</table>
+<table class="colwidths-given docutils align-default" id="id3">
+<caption><span class="caption-text">metrics supported</span><a class="headerlink" href="#id3" title="Permalink to this table">¶</a></caption>
+<colgroup>
+<col style="width: 25%" />
+<col style="width: 25%" />
+<col style="width: 50%" />
+</colgroup>
+<thead>
+<tr class="row-odd"><th class="head"><p>Optimizer name</p></th>
+<th class="head"><p>Mapped Function</p></th>
+<th class="head"><p>Description</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p>mse</p></td>
+<td><p>tf.keras.metrics.MeanSquaredError()</p></td>
+<td></td>
+</tr>
+<tr class="row-odd"><td><p>rmse</p></td>
+<td><p>tf.keras.metrics.RootMeanSquaredError()</p></td>
+<td></td>
+</tr>
+<tr class="row-even"><td><p>mae</p></td>
+<td><p>tf.keras.metrics.MeanAbsoluteError()</p></td>
+<td></td>
+</tr>
+<tr class="row-odd"><td><p>mape</p></td>
+<td><p>tf.keras.metrics.MeanAbsolutePercentageError()</p></td>
+<td></td>
+</tr>
+<tr class="row-even"><td><p>msle</p></td>
+<td><p>tf.keras.metrics.MeanSquaredLogarithmicError()</p></td>
+<td></td>
+</tr>
+<tr class="row-odd"><td><p>mean</p></td>
+<td><p>tf.keras.metrics.Mean()</p></td>
+<td></td>
+</tr>
+<tr class="row-even"><td><p>sum</p></td>
+<td><p>tf.keras.metrics.Sum()</p></td>
+<td></td>
+</tr>
+<tr class="row-odd"><td><p>kldiv</p></td>
+<td><p>tf.keras.metrics.KLDivergence()</p></td>
+<td></td>
+</tr>
+</tbody>
+</table>
+<table class="colwidths-given docutils align-default" id="id4">
+<caption><span class="caption-text">loss functions supported</span><a class="headerlink" href="#id4" title="Permalink to this table">¶</a></caption>
+<colgroup>
+<col style="width: 25%" />
+<col style="width: 25%" />
+<col style="width: 50%" />
+</colgroup>
+<thead>
+<tr class="row-odd"><th class="head"><p>Loss function name</p></th>
+<th class="head"><p>Mapped Function</p></th>
+<th class="head"><p>Description</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p>mse</p></td>
+<td><p>tf.keras.losses.MeanSquaredError()</p></td>
+<td></td>
+</tr>
+<tr class="row-odd"><td><p>mae</p></td>
+<td><p>tf.keras.losses.MeanAbsoluteError()</p></td>
+<td></td>
+</tr>
+<tr class="row-even"><td><p>mape</p></td>
+<td><p>tf.keras.losses.MeanAbsolutePercentageError()</p></td>
+<td></td>
+</tr>
+<tr class="row-odd"><td><p>mape</p></td>
+<td><p>tf.keras.metrics.MeanAbsolutePercentageError()</p></td>
+<td></td>
+</tr>
+<tr class="row-even"><td><p>msle</p></td>
+<td><p>tf.keras.losses.MeanSquaredLogarithmicError()</p></td>
+<td></td>
+</tr>
+<tr class="row-odd"><td><p>kldiv</p></td>
+<td><p>tf.keras.losses.KLDivergence()</p></td>
+<td></td>
+</tr>
+<tr class="row-even"><td><p>cosine</p></td>
+<td><p>tf.keras.losses.CosineSimilarity()</p></td>
+<td></td>
+</tr>
+</tbody>
+</table>
+
+
+            <div class="clearer"></div>
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+  <div role="note" aria-label="source link">
+    <h3>This Page</h3>
+    <ul class="this-page-menu">
+      <li><a href="_sources/documentation_supported_tables.rst.txt"
+            rel="nofollow">Show Source</a></li>
+    </ul>
+   </div>
+<div id="searchbox" style="display: none" role="search">
+  <h3 id="searchlabel">Quick search</h3>
+    <div class="searchformwrapper">
+    <form class="search" action="search.html" method="get">
+      <input type="text" name="q" aria-labelledby="searchlabel" />
+      <input type="submit" value="Go" />
+    </form>
+    </div>
+</div>
+<script>$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="nav-item nav-item-0"><a href="index.html">gimmick 0.2 documentation</a> &#187;</li>
+        <li class="nav-item nav-item-this"><a href="">&lt;no title&gt;</a></li> 
+      </ul>
+    </div>
+    <div class="footer" role="contentinfo">
+        &#169; Copyright 2021, Pankaj Rawat.
+      Created using <a href="https://www.sphinx-doc.org/">Sphinx</a> 3.5.4.
+    </div>
+  </body>
+</html>

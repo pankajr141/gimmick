@@ -10,8 +10,9 @@ from gimmick.models.autoencoder import AutoEncoder
 
 
 class Model(AutoEncoder):
-
-    ''' This function build model graph  '''
+    """ This algorithm uses a CNN based encoder-decoder n/w for learning and generating images.
+    https://en.wikipedia.org/wiki/Convolutional_neural_network
+    """
     def build_model_graph(self, images_shape):
         total_pixels = images_shape[0] * images_shape[1] * images_shape[2]
 
