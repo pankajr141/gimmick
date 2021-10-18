@@ -56,25 +56,15 @@ def main():
     images = _dataset_mnist()
 
     #plot_images(images[0:16], n_col=8, name='img_orig.png')
-    print(images.shape)
-
     modelfile = "gan.zip"
-    model = gimmick.learn(images[0:400], algo='gan', epochs=1, code_length=8, samples_for_code_statistics=512, loss_function='binary_crossentropy')
+    model = gimmick.learn(images, algo='gan', epochs=40, learning_rate=0.00001, code_length=32, samples_for_code_statistics=512, loss_function='binary_crossentropy')
     model.save(modelfile)
 
     model = gimmick.load(modelfile)
-    codes = model.prepare_code_statistics(images, sample_size=512)
-    print(codes[0])
     images_gen = model.generate(32, batch_size=8) # Generate N random samples/images
-
-    # Test 1 - check if original image can be reproduced by main model
-    # images_gen = model.reproduce(images[0:16])
-
-    # Test 2 - Generate some code and see if generator model can generate image like original
-    # codes = model.prepare_code_statistics(images)
-    # images_gen = model.generate(16, codes=codes, batch_size=8)
-
-    images_gen = images_gen.reshape(-1, images_gen.shape[1], images_gen.shape[2])
+    import numpy as np
+    print(np.max(images_gen[0]))
+    # images_gen = images_gen.reshape(-1, images_gen.shape[1], images_gen.shape[2])
     print(images_gen.shape)
     plot_images(images_gen, n_col=8)
 
