@@ -1,0 +1,200 @@
+
+
+<!doctype html>
+
+<html>
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>gimmick.distributer &#8212; gimmick 0.2 documentation</title>
+    <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
+    <link rel="stylesheet" href="../../_static/bizstyle.css" type="text/css" />
+    
+    <script id="documentation_options" data-url_root="../../" src="../../_static/documentation_options.js"></script>
+    <script src="../../_static/jquery.js"></script>
+    <script src="../../_static/underscore.js"></script>
+    <script src="../../_static/doctools.js"></script>
+    <script src="../../_static/bizstyle.js"></script>
+    <link rel="index" title="Index" href="../../genindex.html" />
+    <link rel="search" title="Search" href="../../search.html" />
+    <meta name="viewport" content="width=device-width,initial-scale=1.0" />
+    <!--[if lt IE 9]>
+    <script src="_static/css3-mediaqueries.js"></script>
+    <![endif]-->
+  </head><body>
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../../genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="../../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="nav-item nav-item-0"><a href="../../index.html">gimmick 0.2 documentation</a> &#187;</li>
+          <li class="nav-item nav-item-1"><a href="../index.html" accesskey="U">Module code</a> &#187;</li>
+        <li class="nav-item nav-item-this"><a href="">gimmick.distributer</a></li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <h1>Source code for gimmick.distributer</h1><div class="highlight"><pre>
+<span></span><span class="sd">&quot;&quot;&quot; This library act as interactive bridge between user and code.</span>
+
+<span class="sd">It contains higher level functions which are used to train models</span>
+
+<span class="sd">    * learn - returns trained model to generate new images</span>
+<span class="sd">&quot;&quot;&quot;</span>
+
+<span class="kn">import</span> <span class="nn">pickle</span>
+<span class="kn">from</span> <span class="nn">gimmick</span> <span class="kn">import</span> <span class="n">mapping</span>
+<span class="kn">from</span> <span class="nn">gimmick.image_op</span> <span class="kn">import</span> <span class="n">functions</span> <span class="k">as</span> <span class="n">image_functions</span>
+<span class="kn">from</span> <span class="nn">sklearn.model_selection</span> <span class="kn">import</span> <span class="n">train_test_split</span>
+
+<span class="n">algo</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="n">mapping</span><span class="o">.</span><span class="n">algo_mapping</span><span class="o">.</span><span class="n">keys</span><span class="p">())</span>
+
+<div class="viewcode-block" id="learn"><a class="viewcode-back" href="../../index.html#gimmick.distributer.learn">[docs]</a><span class="k">def</span> <span class="nf">learn</span><span class="p">(</span><span class="n">images</span><span class="p">,</span> <span class="n">algo</span><span class="p">,</span> <span class="n">code_length</span><span class="o">=</span><span class="mi">8</span><span class="p">,</span> <span class="n">num_encoder_layers</span><span class="o">=</span><span class="s1">&#39;auto&#39;</span><span class="p">,</span> <span class="n">num_decoder_layers</span><span class="o">=</span><span class="s1">&#39;auto&#39;</span><span class="p">,</span> <span class="n">epochs</span><span class="o">=</span><span class="mi">10</span><span class="p">,</span>
+          <span class="n">batch_size</span><span class="o">=</span><span class="mi">16</span><span class="p">,</span> <span class="n">optimizer</span><span class="o">=</span><span class="s1">&#39;adam&#39;</span><span class="p">,</span> <span class="n">learning_rate</span><span class="o">=</span><span class="mf">0.001</span><span class="p">,</span> <span class="n">loss_function</span><span class="o">=</span><span class="s1">&#39;mse&#39;</span><span class="p">,</span> <span class="n">metrics</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;mse&#39;</span><span class="p">],</span>
+          <span class="n">samples_for_code_statistics</span><span class="o">=</span><span class="mi">64</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot; This function train model based on passed data and argumenents to generate realastic looking images</span>
+
+<span class="sd">    **Parameters**</span>
+
+<span class="sd">    images :  list</span>
+<span class="sd">        Images to be passed to learning functions, has shape [N, (2D or 3D)], where N is number of samples and 2D and 3D denotes image size</span>
+<span class="sd">    algo :  str</span>
+<span class="sd">        Algorithm to be used to learn image representation, Eg Autoencode_dense,</span>
+<span class="sd">    code_length: int</span>
+<span class="sd">        Default 8, Length of intermediate representation or condense space generated by model. In order to generate a random image sample having dimention equal to code_length must be passed.</span>
+<span class="sd">    num_encoder_layer: int</span>
+<span class="sd">        Default &#39;auto&#39;, number of layers to be used in encoder, applicable for autoenocder</span>
+<span class="sd">    num_decoder_layers: int</span>
+<span class="sd">        Default &#39;auto&#39;, number of layers to be used in decoder, applicable for autoenocder</span>
+<span class="sd">    epochs: int</span>
+<span class="sd">        Default 10, number of epoch to be used while training model</span>
+<span class="sd">    batch_size: int</span>
+<span class="sd">        Default 16, batch size of each training/eval/generation step</span>
+<span class="sd">    optimizer:  string</span>
+<span class="sd">        Default &#39;adam&#39;, optimizer used to train the model</span>
+<span class="sd">    learning_rate: int</span>
+<span class="sd">        Default 0.001, learning rate for training model</span>
+<span class="sd">    loss_function: string</span>
+<span class="sd">        Default &#39;mse&#39;, loss function for training model</span>
+<span class="sd">    metrics: list of string</span>
+<span class="sd">        Default [&#39;mse&#39;], list of metrics to be printed while training</span>
+<span class="sd">    samples_for_code_statistics: int</span>
+<span class="sd">        Default 64, samples to be used to generate code statistics</span>
+
+
+<span class="sd">    **Returns**</span>
+
+<span class="sd">    object</span>
+<span class="sd">        model object trained on given dataset</span>
+
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Number sample:&quot;</span><span class="p">,</span> <span class="n">images</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="s2">&quot;Image shape:&quot;</span><span class="p">,</span> <span class="n">images</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">shape</span><span class="p">)</span>
+
+    <span class="n">model</span> <span class="o">=</span> <span class="n">mapping</span><span class="o">.</span><span class="n">algo_mapping</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">algo</span><span class="p">,</span> <span class="kc">None</span><span class="p">)</span>
+    <span class="k">if</span> <span class="ow">not</span> <span class="n">model</span><span class="p">:</span>
+        <span class="k">raise</span> <span class="ne">Exception</span><span class="p">(</span><span class="s2">&quot;Algo not implement/present possible values for also are </span><span class="si">%s</span><span class="s2">&quot;</span> <span class="o">%</span> <span class="p">(</span><span class="n">mapping</span><span class="o">.</span><span class="n">algo_mapping</span><span class="o">.</span><span class="n">keys</span><span class="p">()))</span>
+
+    <span class="n">optimizer_keys</span> <span class="o">=</span> <span class="n">optimizer</span>
+    <span class="n">optimizer</span> <span class="o">=</span> <span class="n">mapping</span><span class="o">.</span><span class="n">optimizer_mapping</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">optimizer</span><span class="p">,</span> <span class="kc">None</span><span class="p">)</span>
+    <span class="k">if</span> <span class="ow">not</span> <span class="n">optimizer</span><span class="p">:</span>
+        <span class="k">raise</span> <span class="ne">Exception</span><span class="p">(</span><span class="s2">&quot;Optimizer not implement/present possible values for also are </span><span class="si">%s</span><span class="s2">&quot;</span> <span class="o">%</span> <span class="p">(</span><span class="n">mapping</span><span class="o">.</span><span class="n">optimizer_mapping</span><span class="o">.</span><span class="n">keys</span><span class="p">()))</span>
+
+    <span class="n">loss_function_keys</span> <span class="o">=</span> <span class="n">loss_function</span>
+    <span class="n">loss_function</span> <span class="o">=</span> <span class="n">mapping</span><span class="o">.</span><span class="n">loss_function_mapping</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">loss_function</span><span class="p">,</span> <span class="kc">None</span><span class="p">)</span>
+    <span class="k">if</span> <span class="ow">not</span> <span class="n">optimizer</span><span class="p">:</span>
+        <span class="k">raise</span> <span class="ne">Exception</span><span class="p">(</span><span class="s2">&quot;loss_function not implement/present possible values for also are </span><span class="si">%s</span><span class="s2">&quot;</span> <span class="o">%</span> <span class="p">(</span><span class="n">mapping</span><span class="o">.</span><span class="n">loss_function_mapping</span><span class="o">.</span><span class="n">keys</span><span class="p">()))</span>
+
+    <span class="n">metrics_keys</span> <span class="o">=</span> <span class="n">metrics</span>
+    <span class="n">metrics</span> <span class="o">=</span> <span class="p">[</span><span class="n">mapping</span><span class="o">.</span><span class="n">metrics_mapping</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="kc">None</span><span class="p">)</span> <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="n">metrics</span><span class="p">]</span>
+    <span class="k">if</span> <span class="nb">list</span><span class="p">(</span><span class="nb">filter</span><span class="p">(</span><span class="k">lambda</span> <span class="n">x</span><span class="p">:</span> <span class="n">x</span> <span class="o">==</span> <span class="kc">None</span><span class="p">,</span> <span class="n">metrics</span><span class="p">)):</span>
+        <span class="k">raise</span> <span class="ne">Exception</span><span class="p">(</span><span class="s2">&quot;One or more of the metrics passed is not a valid metrics, possible values are </span><span class="si">%s</span><span class="s2">&quot;</span> <span class="o">%</span> <span class="p">(</span><span class="n">mapping</span><span class="o">.</span><span class="n">metrics_mapping</span><span class="o">.</span><span class="n">keys</span><span class="p">()))</span>
+
+    <span class="k">if</span> <span class="n">code_length</span> <span class="o">%</span> <span class="mi">4</span> <span class="o">!=</span> <span class="mi">0</span><span class="p">:</span>
+        <span class="k">raise</span> <span class="ne">Exception</span><span class="p">(</span><span class="s2">&quot;code_length must be a multiple of 4&quot;</span><span class="p">)</span>
+    <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;===================================================================&quot;</span><span class="p">)</span>
+    <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Algo:</span><span class="se">\t\t</span><span class="s2">&quot;</span><span class="p">,</span> <span class="n">model</span><span class="p">)</span>
+    <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;optimizer:</span><span class="se">\t</span><span class="s2">&quot;</span><span class="p">,</span> <span class="n">optimizer</span><span class="p">)</span>
+    <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;loss_function:</span><span class="se">\t</span><span class="s2">&quot;</span><span class="p">,</span> <span class="n">loss_function</span><span class="p">)</span>
+    <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;metrics:</span><span class="se">\t</span><span class="s2">&quot;</span><span class="p">,</span> <span class="n">metrics</span><span class="p">)</span>
+    <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Epochs:</span><span class="se">\t\t</span><span class="s2">&quot;</span><span class="p">,</span> <span class="n">epochs</span><span class="p">)</span>
+
+    <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;batch_size:</span><span class="se">\t</span><span class="s2">&quot;</span><span class="p">,</span> <span class="n">batch_size</span><span class="p">)</span>
+    <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;learning_rate:</span><span class="se">\t</span><span class="s2">&quot;</span><span class="p">,</span> <span class="n">learning_rate</span><span class="p">)</span>
+
+    <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;===================================================================&quot;</span><span class="p">)</span>
+    <span class="c1">## Write code to normalize image to nearest 2 power, min 8x8x1</span>
+    <span class="n">images</span> <span class="o">=</span> <span class="n">image_functions</span><span class="o">.</span><span class="n">convert_2dto3d</span><span class="p">(</span><span class="n">images</span><span class="p">)</span>
+
+    <span class="k">if</span> <span class="n">algo</span><span class="o">.</span><span class="n">startswith</span><span class="p">(</span><span class="s1">&#39;gan&#39;</span><span class="p">):</span>
+        <span class="n">model</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="n">learning_rate</span><span class="o">=</span><span class="n">learning_rate</span><span class="p">,</span> <span class="n">optimizer</span><span class="o">=</span><span class="n">optimizer</span><span class="p">,</span> <span class="n">optimizer_keys</span><span class="o">=</span><span class="n">optimizer_keys</span><span class="p">,</span>
+                       <span class="n">loss_function</span><span class="o">=</span><span class="n">loss_function</span><span class="p">,</span> <span class="n">loss_function_keys</span><span class="o">=</span><span class="n">loss_function_keys</span><span class="p">,</span>
+                       <span class="n">metrics</span><span class="o">=</span><span class="n">metrics</span><span class="p">,</span> <span class="n">metrics_keys</span><span class="o">=</span><span class="n">metrics_keys</span><span class="p">,</span><span class="n">code_length</span><span class="o">=</span><span class="n">code_length</span><span class="p">,</span>
+                       <span class="n">num_generator_layers</span><span class="o">=</span><span class="n">num_encoder_layers</span><span class="p">,</span> <span class="n">num_discriminator_layers</span><span class="o">=</span><span class="n">num_decoder_layers</span><span class="p">)</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="n">model</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="n">learning_rate</span><span class="o">=</span><span class="n">learning_rate</span><span class="p">,</span> <span class="n">optimizer</span><span class="o">=</span><span class="n">optimizer</span><span class="p">,</span> <span class="n">optimizer_keys</span><span class="o">=</span><span class="n">optimizer_keys</span><span class="p">,</span>
+                       <span class="n">loss_function</span><span class="o">=</span><span class="n">loss_function</span><span class="p">,</span> <span class="n">loss_function_keys</span><span class="o">=</span><span class="n">loss_function_keys</span><span class="p">,</span>
+                       <span class="n">metrics</span><span class="o">=</span><span class="n">metrics</span><span class="p">,</span> <span class="n">metrics_keys</span><span class="o">=</span><span class="n">metrics_keys</span><span class="p">,</span><span class="n">code_length</span><span class="o">=</span><span class="n">code_length</span><span class="p">,</span>
+                       <span class="n">num_encoder_layers</span><span class="o">=</span><span class="n">num_encoder_layers</span><span class="p">,</span> <span class="n">num_decoder_layers</span><span class="o">=</span><span class="n">num_decoder_layers</span><span class="p">)</span>
+
+    <span class="n">model</span><span class="o">.</span><span class="n">build_model_graph</span><span class="p">(</span><span class="n">images</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">shape</span><span class="p">)</span>
+
+    <span class="n">images_train</span><span class="p">,</span> <span class="n">images_test</span> <span class="o">=</span> <span class="n">train_test_split</span><span class="p">(</span><span class="n">images</span><span class="p">,</span> <span class="n">test_size</span><span class="o">=</span><span class="mf">0.3</span><span class="p">,</span> <span class="n">shuffle</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+
+    <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Train:&quot;</span><span class="p">,</span> <span class="nb">len</span><span class="p">(</span><span class="n">images_train</span><span class="o">.</span><span class="n">shape</span><span class="p">))</span>
+    <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Test:&quot;</span><span class="p">,</span> <span class="nb">len</span><span class="p">(</span><span class="n">images_test</span><span class="o">.</span><span class="n">shape</span><span class="p">))</span>
+
+    <span class="n">model</span><span class="o">.</span><span class="n">train</span><span class="p">(</span><span class="n">images_train</span><span class="p">,</span> <span class="n">images_test</span><span class="p">,</span> <span class="n">epochs</span><span class="o">=</span><span class="n">epochs</span><span class="p">,</span> <span class="n">batch_size</span><span class="o">=</span><span class="n">batch_size</span><span class="p">,</span> <span class="n">validation_split</span><span class="o">=</span><span class="mf">0.2</span><span class="p">)</span>
+    <span class="k">if</span> <span class="ow">not</span> <span class="n">algo</span><span class="o">.</span><span class="n">startswith</span><span class="p">(</span><span class="s1">&#39;gan&#39;</span><span class="p">):</span>
+        <span class="n">model</span><span class="o">.</span><span class="n">prepare_code_statistics</span><span class="p">(</span><span class="n">images_train</span><span class="p">,</span> <span class="n">batch_size</span><span class="o">=</span><span class="n">batch_size</span><span class="p">,</span> <span class="n">sample_size</span><span class="o">=</span><span class="n">samples_for_code_statistics</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">model</span></div>
+</pre></div>
+
+            <div class="clearer"></div>
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+<div id="searchbox" style="display: none" role="search">
+  <h3 id="searchlabel">Quick search</h3>
+    <div class="searchformwrapper">
+    <form class="search" action="../../search.html" method="get">
+      <input type="text" name="q" aria-labelledby="searchlabel" />
+      <input type="submit" value="Go" />
+    </form>
+    </div>
+</div>
+<script>$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../../genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="../../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="nav-item nav-item-0"><a href="../../index.html">gimmick 0.2 documentation</a> &#187;</li>
+          <li class="nav-item nav-item-1"><a href="../index.html" >Module code</a> &#187;</li>
+        <li class="nav-item nav-item-this"><a href="">gimmick.distributer</a></li> 
+      </ul>
+    </div>
+    <div class="footer" role="contentinfo">
+        &#169; Copyright 2021, Pankaj Rawat.
+      Created using <a href="https://www.sphinx-doc.org/">Sphinx</a> 3.5.4.
+    </div>
+  </body>
+</html>

@@ -1,0 +1,518 @@
+
+
+<!doctype html>
+
+<html>
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Gimmick &#8212; gimmick 0.2 documentation</title>
+    <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+    <link rel="stylesheet" href="_static/bizstyle.css" type="text/css" />
+    
+    <script id="documentation_options" data-url_root="./" src="_static/documentation_options.js"></script>
+    <script src="_static/jquery.js"></script>
+    <script src="_static/underscore.js"></script>
+    <script src="_static/doctools.js"></script>
+    <script src="_static/bizstyle.js"></script>
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <meta name="viewport" content="width=device-width,initial-scale=1.0" />
+    <!--[if lt IE 9]>
+    <script src="_static/css3-mediaqueries.js"></script>
+    <![endif]-->
+  </head><body>
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="nav-item nav-item-0"><a href="#">gimmick 0.2 documentation</a> &#187;</li>
+        <li class="nav-item nav-item-this"><a href="">Gimmick</a></li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <div class="toctree-wrapper compound">
+</div>
+<div class="section" id="gimmick">
+<h1>Gimmick<a class="headerlink" href="#gimmick" title="Permalink to this headline">¶</a></h1>
+<p>Lets summarize what we are going to generate</p>
+<div class="section" id="introduction">
+<h2>Introduction<a class="headerlink" href="#introduction" title="Permalink to this headline">¶</a></h2>
+<p>Gimmick is a library for generating realastic looking images though use of popular algorithms. The primary focus of this library is to provide easy to use interface for all the interaction. User need to provide a set of images in form of 3D or 4D vector/array for it to learn.</p>
+<p>The whole purpose of library is its plug and play mechanism meaning user can switch the underlying algortihm and code will remain same.</p>
+</div>
+<div class="section" id="installation">
+<h2>Installation<a class="headerlink" href="#installation" title="Permalink to this headline">¶</a></h2>
+<p>Installation</p>
+<p>Installation of gimmick is straight forward, just use pip. All the dependency will be autoresolved
+Its a complete python based project, hence a simple pip will resolve all the dependency.</p>
+<ul>
+<li><p>Install via pip:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">sudo</span> <span class="n">pip</span> <span class="n">install</span> <span class="n">gimmick</span>
+</pre></div>
+</div>
+</li>
+</ul>
+</div>
+<div class="section" id="quick-examples">
+<h2>Quick Examples<a class="headerlink" href="#quick-examples" title="Permalink to this headline">¶</a></h2>
+</div>
+</div>
+<div class="section" id="documentation">
+<h1>Documentation<a class="headerlink" href="#documentation" title="Permalink to this headline">¶</a></h1>
+<table class="colwidths-given docutils align-default" id="id1">
+<caption><span class="caption-text">Algorithms supported</span><a class="headerlink" href="#id1" title="Permalink to this table">¶</a></caption>
+<colgroup>
+<col style="width: 25%" />
+<col style="width: 25%" />
+<col style="width: 50%" />
+</colgroup>
+<thead>
+<tr class="row-odd"><th class="head"><p>Algorithm name</p></th>
+<th class="head"><p>Algorithm Family</p></th>
+<th class="head"><p>Description</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p>autoenocder_dense</p></td>
+<td><p>autoenocder</p></td>
+<td><p>DNN based encoder decoder architecture</p></td>
+</tr>
+<tr class="row-odd"><td><p>autoencoder_lstm</p></td>
+<td><p>autoenocder</p></td>
+<td><p>LSTM based encoder decoder architecture</p></td>
+</tr>
+<tr class="row-even"><td><p>autoencoder_cnn</p></td>
+<td><p>autoenocder</p></td>
+<td><p>CNN based encoder decoder architecture</p></td>
+</tr>
+<tr class="row-odd"><td><p>autoencoder_cnn_variational</p></td>
+<td><p>autoenocder</p></td>
+<td><p>Variational autoenocder based encoder decoder architecture</p></td>
+</tr>
+</tbody>
+</table>
+<table class="colwidths-given docutils align-default" id="id2">
+<caption><span class="caption-text">optimizer supported</span><a class="headerlink" href="#id2" title="Permalink to this table">¶</a></caption>
+<colgroup>
+<col style="width: 25%" />
+<col style="width: 25%" />
+<col style="width: 50%" />
+</colgroup>
+<thead>
+<tr class="row-odd"><th class="head"><p>Optimizer name</p></th>
+<th class="head"><p>Mapped Function</p></th>
+<th class="head"><p>Description</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p>adam</p></td>
+<td><p>tf.keras.optimizers.Adam()</p></td>
+<td></td>
+</tr>
+<tr class="row-odd"><td><p>adamax</p></td>
+<td><p>tf.keras.optimizers.Adamax()</p></td>
+<td></td>
+</tr>
+<tr class="row-even"><td><p>nadam</p></td>
+<td><p>tf.keras.optimizers.Nadam()</p></td>
+<td></td>
+</tr>
+<tr class="row-odd"><td><p>adagrad</p></td>
+<td><p>tf.keras.optimizers.Adagrad()</p></td>
+<td></td>
+</tr>
+<tr class="row-even"><td><p>rmsprop</p></td>
+<td><p>tf.keras.optimizers.RMSprop()</p></td>
+<td></td>
+</tr>
+<tr class="row-odd"><td><p>sgd</p></td>
+<td><p>tf.keras.optimizers.SGD()</p></td>
+<td></td>
+</tr>
+</tbody>
+</table>
+<table class="colwidths-given docutils align-default" id="id3">
+<caption><span class="caption-text">metrics supported</span><a class="headerlink" href="#id3" title="Permalink to this table">¶</a></caption>
+<colgroup>
+<col style="width: 25%" />
+<col style="width: 25%" />
+<col style="width: 50%" />
+</colgroup>
+<thead>
+<tr class="row-odd"><th class="head"><p>Optimizer name</p></th>
+<th class="head"><p>Mapped Function</p></th>
+<th class="head"><p>Description</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p>mse</p></td>
+<td><p>tf.keras.metrics.MeanSquaredError()</p></td>
+<td></td>
+</tr>
+<tr class="row-odd"><td><p>rmse</p></td>
+<td><p>tf.keras.metrics.RootMeanSquaredError()</p></td>
+<td></td>
+</tr>
+<tr class="row-even"><td><p>mae</p></td>
+<td><p>tf.keras.metrics.MeanAbsoluteError()</p></td>
+<td></td>
+</tr>
+<tr class="row-odd"><td><p>mape</p></td>
+<td><p>tf.keras.metrics.MeanAbsolutePercentageError()</p></td>
+<td></td>
+</tr>
+<tr class="row-even"><td><p>msle</p></td>
+<td><p>tf.keras.metrics.MeanSquaredLogarithmicError()</p></td>
+<td></td>
+</tr>
+<tr class="row-odd"><td><p>mean</p></td>
+<td><p>tf.keras.metrics.Mean()</p></td>
+<td></td>
+</tr>
+<tr class="row-even"><td><p>sum</p></td>
+<td><p>tf.keras.metrics.Sum()</p></td>
+<td></td>
+</tr>
+<tr class="row-odd"><td><p>kldiv</p></td>
+<td><p>tf.keras.metrics.KLDivergence()</p></td>
+<td></td>
+</tr>
+</tbody>
+</table>
+<table class="colwidths-given docutils align-default" id="id4">
+<caption><span class="caption-text">loss functions supported</span><a class="headerlink" href="#id4" title="Permalink to this table">¶</a></caption>
+<colgroup>
+<col style="width: 25%" />
+<col style="width: 25%" />
+<col style="width: 50%" />
+</colgroup>
+<thead>
+<tr class="row-odd"><th class="head"><p>Loss function name</p></th>
+<th class="head"><p>Mapped Function</p></th>
+<th class="head"><p>Description</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p>mse</p></td>
+<td><p>tf.keras.losses.MeanSquaredError()</p></td>
+<td></td>
+</tr>
+<tr class="row-odd"><td><p>mae</p></td>
+<td><p>tf.keras.losses.MeanAbsoluteError()</p></td>
+<td></td>
+</tr>
+<tr class="row-even"><td><p>mape</p></td>
+<td><p>tf.keras.losses.MeanAbsolutePercentageError()</p></td>
+<td></td>
+</tr>
+<tr class="row-odd"><td><p>mape</p></td>
+<td><p>tf.keras.metrics.MeanAbsolutePercentageError()</p></td>
+<td></td>
+</tr>
+<tr class="row-even"><td><p>msle</p></td>
+<td><p>tf.keras.losses.MeanSquaredLogarithmicError()</p></td>
+<td></td>
+</tr>
+<tr class="row-odd"><td><p>kldiv</p></td>
+<td><p>tf.keras.losses.KLDivergence()</p></td>
+<td></td>
+</tr>
+<tr class="row-even"><td><p>cosine</p></td>
+<td><p>tf.keras.losses.CosineSimilarity()</p></td>
+<td></td>
+</tr>
+</tbody>
+</table>
+<div class="section" id="module-gimmick.distributer">
+<span id="distributer"></span><h2>Distributer<a class="headerlink" href="#module-gimmick.distributer" title="Permalink to this headline">¶</a></h2>
+<p>This library act as interactive bridge between user and code.</p>
+<p>It contains higher level functions which are used to train models</p>
+<blockquote>
+<div><ul class="simple">
+<li><p>learn - returns trained model to generate new images</p></li>
+</ul>
+</div></blockquote>
+<dl class="py function">
+<dt id="gimmick.distributer.learn">
+<code class="sig-prename descclassname"><span class="pre">gimmick.distributer.</span></code><code class="sig-name descname"><span class="pre">learn</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">images</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">algo</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">code_length</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">8</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">num_encoder_layers</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'auto'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">num_decoder_layers</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'auto'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">epochs</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">10</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">batch_size</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">16</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">optimizer</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'adam'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">learning_rate</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0.001</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">loss_function</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'mse'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">metrics</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">['mse']</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">samples_for_code_statistics</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">64</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/gimmick/distributer.html#learn"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#gimmick.distributer.learn" title="Permalink to this definition">¶</a></dt>
+<dd><p>This function train model based on passed data and argumenents to generate realastic looking images</p>
+<p><strong>Parameters</strong></p>
+<dl class="simple">
+<dt>images<span class="classifier">list</span></dt><dd><p>Images to be passed to learning functions, has shape [N, (2D or 3D)], where N is number of samples and 2D and 3D denotes image size</p>
+</dd>
+<dt>algo<span class="classifier">str</span></dt><dd><p>Algorithm to be used to learn image representation, Eg Autoencode_dense,</p>
+</dd>
+<dt>code_length: int</dt><dd><p>Default 8, Length of intermediate representation or condense space generated by model. In order to generate a random image sample having dimention equal to code_length must be passed.</p>
+</dd>
+<dt>num_encoder_layer: int</dt><dd><p>Default ‘auto’, number of layers to be used in encoder, applicable for autoenocder</p>
+</dd>
+<dt>num_decoder_layers: int</dt><dd><p>Default ‘auto’, number of layers to be used in decoder, applicable for autoenocder</p>
+</dd>
+<dt>epochs: int</dt><dd><p>Default 10, number of epoch to be used while training model</p>
+</dd>
+<dt>batch_size: int</dt><dd><p>Default 16, batch size of each training/eval/generation step</p>
+</dd>
+<dt>optimizer:  string</dt><dd><p>Default ‘adam’, optimizer used to train the model</p>
+</dd>
+<dt>learning_rate: int</dt><dd><p>Default 0.001, learning rate for training model</p>
+</dd>
+<dt>loss_function: string</dt><dd><p>Default ‘mse’, loss function for training model</p>
+</dd>
+<dt>metrics: list of string</dt><dd><p>Default [‘mse’], list of metrics to be printed while training</p>
+</dd>
+<dt>samples_for_code_statistics: int</dt><dd><p>Default 64, samples to be used to generate code statistics</p>
+</dd>
+</dl>
+<p><strong>Returns</strong></p>
+<dl class="simple">
+<dt>object</dt><dd><p>model object trained on given dataset</p>
+</dd>
+</dl>
+</dd></dl>
+
+</div>
+<div class="section" id="models">
+<h2>Models<a class="headerlink" href="#models" title="Permalink to this headline">¶</a></h2>
+<p>This section contains class details of models which are using to learn pattern in images for image generation.</p>
+<dl class="py class">
+<dt id="gimmick.models.autoencoder.AutoEncoder">
+<em class="property"><span class="pre">class</span> </em><code class="sig-prename descclassname"><span class="pre">gimmick.models.autoencoder.</span></code><code class="sig-name descname"><span class="pre">AutoEncoder</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">learning_rate</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">optimizer</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">optimizer_keys</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">loss_function</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">loss_function_keys</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">metrics</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">metrics_keys</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">code_length</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">8</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">num_encoder_layers</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">-</span> <span class="pre">1</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">num_decoder_layers</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">-</span> <span class="pre">1</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/gimmick/models/autoencoder.html#AutoEncoder"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#gimmick.models.autoencoder.AutoEncoder" title="Permalink to this definition">¶</a></dt>
+<dd><p>Autoenocoder - Base class for Autoencoders</p>
+<p><strong>Parameters</strong></p>
+<dl class="simple">
+<dt>learning_rate: int</dt><dd><p>value passed by user to distributer.learn function</p>
+</dd>
+<dt>optimizer:  object</dt><dd><p>value passed by user to distributer.learn function</p>
+</dd>
+<dt>optimizer_keys:  string</dt><dd><p>value passed by user to distributer.learn function</p>
+</dd>
+<dt>loss_function: object</dt><dd><p>value passed by user to distributer.learn function</p>
+</dd>
+<dt>loss_function_keys: string</dt><dd><p>value passed by user to distributer.learn function</p>
+</dd>
+<dt>metrics: list of string</dt><dd><p>value passed by user to distributer.learn function</p>
+</dd>
+<dt>metrics_keys: list of string</dt><dd><p>value passed by user to distributer.learn function</p>
+</dd>
+<dt>code_length: int</dt><dd><p>Default 8, Length of intermediate representation or condense space generated by model. In order to generate a random image sample having dimention equal to code_length must be passed.</p>
+</dd>
+<dt>num_encoder_layer: int</dt><dd><p>Default ‘auto’, number of layers to be used in encoder, applicable for autoenocder</p>
+</dd>
+<dt>num_decoder_layers: int</dt><dd><p>Default ‘auto’, number of layers to be used in decoder, applicable for autoenocder</p>
+</dd>
+</dl>
+<dl class="py method">
+<dt id="gimmick.models.autoencoder.AutoEncoder.build_model_graph">
+<code class="sig-name descname"><span class="pre">build_model_graph</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">images_shape</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/gimmick/models/autoencoder.html#AutoEncoder.build_model_graph"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#gimmick.models.autoencoder.AutoEncoder.build_model_graph" title="Permalink to this definition">¶</a></dt>
+<dd><p>Function to build model by learning image representation</p>
+<p><strong>Parameters</strong></p>
+<dl class="simple">
+<dt>images_shape<span class="classifier">array</span></dt><dd><p>shape of the images which are passed as training samples, list of int Eg. [44, 44, 3], this shape denotes that each image is of 44x44x3 diminesion.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt id="gimmick.models.autoencoder.AutoEncoder.generate">
+<code class="sig-name descname"><span class="pre">generate</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">n</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">codes</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">batch_size</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">8</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">print_model</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/gimmick/models/autoencoder.html#AutoEncoder.generate"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#gimmick.models.autoencoder.AutoEncoder.generate" title="Permalink to this definition">¶</a></dt>
+<dd><p>This function is used to train model on given training images, based on data enoder part learns to compress images into intermediate dimension containing N points, and decoder learns to decipher the intermediate dimension. The indermediate dimention of N points (code_length), when randomly generated will produce new images.</p>
+<p><strong>Parameters</strong></p>
+<dl class="simple">
+<dt>n: int</dt><dd><p>number of images to be generated by our trained model</p>
+</dd>
+<dt>codes: list</dt><dd><p>Default: None, if passes then model will use this set of codes for generating images, else it will generate random distribution based on earlier calculated code statistics</p>
+</dd>
+<dt>batch_size: int</dt><dd><p>Default 16, batch_size used for training model.</p>
+</dd>
+<dt>print_model: boolean</dt><dd><p>Default False,  whether to print model information</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt id="gimmick.models.autoencoder.AutoEncoder.prepare_code_statistics">
+<code class="sig-name descname"><span class="pre">prepare_code_statistics</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">images</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">batch_size</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">8</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">sample_size</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">64</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">print_model</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/gimmick/models/autoencoder.html#AutoEncoder.prepare_code_statistics"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#gimmick.models.autoencoder.AutoEncoder.prepare_code_statistics" title="Permalink to this definition">¶</a></dt>
+<dd><p>This function return the statistics for intermedite highly condence space of N Dimention
+which can be used to generate similar samples</p>
+<p><strong>Parameters</strong></p>
+<dl class="simple">
+<dt>images: list</dt><dd><p>3D shape of the image, Eg, 128x128x3, 64x64x3</p>
+</dd>
+<dt>batch_size: int</dt><dd><p>Default 32, batch_size for generating code statistics from learned model, by passing training images as batches of batch_size.</p>
+</dd>
+<dt>sample_size: int</dt><dd><p>Default 64, number of samples from training images to be used for generating code statistics</p>
+</dd>
+<dt>print_model: Boolean</dt><dd><p>Default False, whether to print model information</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt id="gimmick.models.autoencoder.AutoEncoder.reproduce">
+<code class="sig-name descname"><span class="pre">reproduce</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">images</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">batch_size</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">8</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/gimmick/models/autoencoder.html#AutoEncoder.reproduce"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#gimmick.models.autoencoder.AutoEncoder.reproduce" title="Permalink to this definition">¶</a></dt>
+<dd><p>Testing function to check whether our model can reprodue exact same image as given as input.</p>
+<p><strong>Parameters</strong></p>
+<dl class="simple">
+<dt>images: list</dt><dd><p>N 3D images, Eg, 512x128x128x3, 1024x64x64x3</p>
+</dd>
+<dt>batch_size: int</dt><dd><p>Default 8, batch_size used for evaluation</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt id="gimmick.models.autoencoder.AutoEncoder.save">
+<code class="sig-name descname"><span class="pre">save</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">modelfile</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/gimmick/models/autoencoder.html#AutoEncoder.save"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#gimmick.models.autoencoder.AutoEncoder.save" title="Permalink to this definition">¶</a></dt>
+<dd><p>Function save model to a persistat storage</p>
+<p><strong>Parameters</strong></p>
+<dl class="simple">
+<dt>modelfile: string</dt><dd><p>Path where model needs to be saved</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt id="gimmick.models.autoencoder.AutoEncoder.train">
+<code class="sig-name descname"><span class="pre">train</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">images_train</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">images_test</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">epochs</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">10</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">batch_size</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">16</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">validation_split</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0.2</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/gimmick/models/autoencoder.html#AutoEncoder.train"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#gimmick.models.autoencoder.AutoEncoder.train" title="Permalink to this definition">¶</a></dt>
+<dd><p>This function is used to train model on given training images, based on data enoder part learns to compress images into intermediate dimension containing N points, and decoder learns to decipher the intermediate dimension. The indermediate dimention of N points (code_length), when randomly generated will produce new images.</p>
+<p><strong>Parameters</strong></p>
+<dl class="simple">
+<dt>images_train: list</dt><dd><p>3D shape of the image, Eg, 128x128x3, 64x64x3 to be used for training model</p>
+</dd>
+<dt>images_test: list</dt><dd><p>3D shape of the image, Eg, 128x128x3, 64x64x3 to be used for testing model</p>
+</dd>
+<dt>epochs: int</dt><dd><p>Default 10, number of epochs for model training.</p>
+</dd>
+<dt>batch_size: int</dt><dd><p>Default 16, batch_size used for training model.</p>
+</dd>
+<dt>validation_split: float</dt><dd><p>Default 0.2, validation ratio to be used for validating model, it is formed by sampling training data</p>
+</dd>
+</dl>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt id="gimmick.models.autoencoder_dense.Model">
+<em class="property"><span class="pre">class</span> </em><code class="sig-prename descclassname"><span class="pre">gimmick.models.autoencoder_dense.</span></code><code class="sig-name descname"><span class="pre">Model</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">learning_rate</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">optimizer</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">optimizer_keys</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">loss_function</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">loss_function_keys</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">metrics</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">metrics_keys</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">code_length</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">8</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">num_encoder_layers</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">-</span> <span class="pre">1</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">num_decoder_layers</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">-</span> <span class="pre">1</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/gimmick/models/autoencoder_dense.html#Model"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#gimmick.models.autoencoder_dense.Model" title="Permalink to this definition">¶</a></dt>
+<dd><p>This algorithm uses a feed forward dense layer model for learning and generating images.
+<a class="reference external" href="https://en.wikipedia.org/wiki/Feedforward_neural_network">https://en.wikipedia.org/wiki/Feedforward_neural_network</a></p>
+</dd></dl>
+
+<dl class="py class">
+<dt id="gimmick.models.autoencoder_lstm.Model">
+<em class="property"><span class="pre">class</span> </em><code class="sig-prename descclassname"><span class="pre">gimmick.models.autoencoder_lstm.</span></code><code class="sig-name descname"><span class="pre">Model</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">learning_rate</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">optimizer</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">optimizer_keys</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">loss_function</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">loss_function_keys</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">metrics</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">metrics_keys</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">code_length</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">8</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">num_encoder_layers</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">-</span> <span class="pre">1</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">num_decoder_layers</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">-</span> <span class="pre">1</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/gimmick/models/autoencoder_lstm.html#Model"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#gimmick.models.autoencoder_lstm.Model" title="Permalink to this definition">¶</a></dt>
+<dd><p>This algorithm uses a LSTM based encoder-decoder n/w for learning and generating images.
+<a class="reference external" href="https://en.wikipedia.org/wiki/Long_short-term_memory">https://en.wikipedia.org/wiki/Long_short-term_memory</a></p>
+</dd></dl>
+
+<dl class="py class">
+<dt id="gimmick.models.autoencoder_cnn.Model">
+<em class="property"><span class="pre">class</span> </em><code class="sig-prename descclassname"><span class="pre">gimmick.models.autoencoder_cnn.</span></code><code class="sig-name descname"><span class="pre">Model</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">learning_rate</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">optimizer</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">optimizer_keys</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">loss_function</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">loss_function_keys</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">metrics</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">metrics_keys</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">code_length</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">8</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">num_encoder_layers</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">-</span> <span class="pre">1</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">num_decoder_layers</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">-</span> <span class="pre">1</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/gimmick/models/autoencoder_cnn.html#Model"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#gimmick.models.autoencoder_cnn.Model" title="Permalink to this definition">¶</a></dt>
+<dd><p>This algorithm uses a CNN based encoder-decoder n/w for learning and generating images.
+<a class="reference external" href="https://en.wikipedia.org/wiki/Convolutional_neural_network">https://en.wikipedia.org/wiki/Convolutional_neural_network</a></p>
+</dd></dl>
+
+<dl class="py class">
+<dt id="gimmick.models.autoencoder_cnn_variational.Model">
+<em class="property"><span class="pre">class</span> </em><code class="sig-prename descclassname"><span class="pre">gimmick.models.autoencoder_cnn_variational.</span></code><code class="sig-name descname"><span class="pre">Model</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">learning_rate</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">optimizer</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">optimizer_keys</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">loss_function</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">loss_function_keys</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">metrics</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">metrics_keys</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">code_length</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">8</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">num_encoder_layers</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">-</span> <span class="pre">1</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">num_decoder_layers</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">-</span> <span class="pre">1</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/gimmick/models/autoencoder_cnn_variational.html#Model"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#gimmick.models.autoencoder_cnn_variational.Model" title="Permalink to this definition">¶</a></dt>
+<dd><p>This algorithm uses a CNN based variational autoenocder for learning and generating images.
+<a class="reference external" href="https://en.wikipedia.org/wiki/Variational_autoencoder">https://en.wikipedia.org/wiki/Variational_autoencoder</a></p>
+</dd></dl>
+
+</div>
+<div class="section" id="module-gimmick.image_op.functions">
+<span id="image-operations"></span><h2>Image Operations<a class="headerlink" href="#module-gimmick.image_op.functions" title="Permalink to this headline">¶</a></h2>
+<p>This module provide common utility function on images which are used across different sections</p>
+<dl class="py function">
+<dt id="gimmick.image_op.functions.convert_2dto3d">
+<code class="sig-prename descclassname"><span class="pre">gimmick.image_op.functions.</span></code><code class="sig-name descname"><span class="pre">convert_2dto3d</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">images</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/gimmick/image_op/functions.html#convert_2dto3d"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#gimmick.image_op.functions.convert_2dto3d" title="Permalink to this definition">¶</a></dt>
+<dd><p>Function convert a list of 2D images to list of 3D images</p>
+</dd></dl>
+
+</div>
+</div>
+<div class="section" id="indices-and-tables">
+<h1>Indices and tables<a class="headerlink" href="#indices-and-tables" title="Permalink to this headline">¶</a></h1>
+<ul class="simple">
+<li><p><a class="reference internal" href="genindex.html"><span class="std std-ref">Index</span></a></p></li>
+<li><p><a class="reference internal" href="py-modindex.html"><span class="std std-ref">Module Index</span></a></p></li>
+<li><p><a class="reference internal" href="search.html"><span class="std std-ref">Search Page</span></a></p></li>
+</ul>
+</div>
+
+
+            <div class="clearer"></div>
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+  <h3><a href="#">Table of Contents</a></h3>
+  <ul>
+<li><a class="reference internal" href="#">Gimmick</a><ul>
+<li><a class="reference internal" href="#introduction">Introduction</a></li>
+<li><a class="reference internal" href="#installation">Installation</a></li>
+<li><a class="reference internal" href="#quick-examples">Quick Examples</a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#documentation">Documentation</a><ul>
+<li><a class="reference internal" href="#module-gimmick.distributer">Distributer</a></li>
+<li><a class="reference internal" href="#models">Models</a></li>
+<li><a class="reference internal" href="#module-gimmick.image_op.functions">Image Operations</a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#indices-and-tables">Indices and tables</a></li>
+</ul>
+
+  <div role="note" aria-label="source link">
+    <h3>This Page</h3>
+    <ul class="this-page-menu">
+      <li><a href="_sources/index.rst.txt"
+            rel="nofollow">Show Source</a></li>
+    </ul>
+   </div>
+<div id="searchbox" style="display: none" role="search">
+  <h3 id="searchlabel">Quick search</h3>
+    <div class="searchformwrapper">
+    <form class="search" action="search.html" method="get">
+      <input type="text" name="q" aria-labelledby="searchlabel" />
+      <input type="submit" value="Go" />
+    </form>
+    </div>
+</div>
+<script>$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="nav-item nav-item-0"><a href="#">gimmick 0.2 documentation</a> &#187;</li>
+        <li class="nav-item nav-item-this"><a href="">Gimmick</a></li> 
+      </ul>
+    </div>
+    <div class="footer" role="contentinfo">
+        &#169; Copyright 2021, Pankaj Rawat.
+      Created using <a href="https://www.sphinx-doc.org/">Sphinx</a> 3.5.4.
+    </div>
+  </body>
+</html>

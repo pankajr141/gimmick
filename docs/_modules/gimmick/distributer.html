@@ -119,7 +119,7 @@
         <span class="k">raise</span> <span class="ne">Exception</span><span class="p">(</span><span class="s2">&quot;One or more of the metrics passed is not a valid metrics, possible values are </span><span class="si">%s</span><span class="s2">&quot;</span> <span class="o">%</span> <span class="p">(</span><span class="n">mapping</span><span class="o">.</span><span class="n">metrics_mapping</span><span class="o">.</span><span class="n">keys</span><span class="p">()))</span>
 
     <span class="k">if</span> <span class="n">code_length</span> <span class="o">%</span> <span class="mi">4</span> <span class="o">!=</span> <span class="mi">0</span><span class="p">:</span>
-        <span class="k">raise</span> <span class="n">Excpetion</span><span class="p">(</span><span class="s2">&quot;code_length must be a multiple of 4&quot;</span><span class="p">)</span>
+        <span class="k">raise</span> <span class="ne">Exception</span><span class="p">(</span><span class="s2">&quot;code_length must be a multiple of 4&quot;</span><span class="p">)</span>
     <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;===================================================================&quot;</span><span class="p">)</span>
     <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Algo:</span><span class="se">\t\t</span><span class="s2">&quot;</span><span class="p">,</span> <span class="n">model</span><span class="p">)</span>
     <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;optimizer:</span><span class="se">\t</span><span class="s2">&quot;</span><span class="p">,</span> <span class="n">optimizer</span><span class="p">)</span>
@@ -153,7 +153,8 @@
     <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Test:&quot;</span><span class="p">,</span> <span class="nb">len</span><span class="p">(</span><span class="n">images_test</span><span class="o">.</span><span class="n">shape</span><span class="p">))</span>
 
     <span class="n">model</span><span class="o">.</span><span class="n">train</span><span class="p">(</span><span class="n">images_train</span><span class="p">,</span> <span class="n">images_test</span><span class="p">,</span> <span class="n">epochs</span><span class="o">=</span><span class="n">epochs</span><span class="p">,</span> <span class="n">batch_size</span><span class="o">=</span><span class="n">batch_size</span><span class="p">,</span> <span class="n">validation_split</span><span class="o">=</span><span class="mf">0.2</span><span class="p">)</span>
-    <span class="n">model</span><span class="o">.</span><span class="n">prepare_code_statistics</span><span class="p">(</span><span class="n">images_train</span><span class="p">,</span> <span class="n">batch_size</span><span class="o">=</span><span class="n">batch_size</span><span class="p">,</span> <span class="n">sample_size</span><span class="o">=</span><span class="n">samples_for_code_statistics</span><span class="p">)</span>
+    <span class="k">if</span> <span class="ow">not</span> <span class="n">algo</span><span class="o">.</span><span class="n">startswith</span><span class="p">(</span><span class="s1">&#39;gan&#39;</span><span class="p">):</span>
+        <span class="n">model</span><span class="o">.</span><span class="n">prepare_code_statistics</span><span class="p">(</span><span class="n">images_train</span><span class="p">,</span> <span class="n">batch_size</span><span class="o">=</span><span class="n">batch_size</span><span class="p">,</span> <span class="n">sample_size</span><span class="o">=</span><span class="n">samples_for_code_statistics</span><span class="p">)</span>
     <span class="k">return</span> <span class="n">model</span></div>
 </pre></div>
 
