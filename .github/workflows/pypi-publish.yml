@@ -1,8 +1,8 @@
-name: Publish package
+name: Publish package to pypi
 
 on:
   push:
-    branches: [ develop ]
+    branches: [ main ]
   pull_request:
     branches: [ main ]
 
