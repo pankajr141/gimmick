@@ -1,12 +1,29 @@
 import setuptools
+import subprocess
+import pathlib
+import pkg_resources
 from glob import glob
+
+version = (
+    subprocess.run(["git", "describe", "--tags"], stdout=subprocess.PIPE)
+    .stdout.decode("utf-8")
+    .strip()
+)
+assert "." in version
 
 with open("README.md", "r") as fh:
     long_description = fh.read()
 
+with pathlib.Path('requirements.txt').open() as requirements_txt:
+    install_requires = [
+        str(requirement)
+        for requirement
+        in pkg_resources.parse_requirements(requirements_txt)
+    ]
+
 setuptools.setup(
     name="gimmick",
-    version="0.2",
+    version=version,
     author="Pankaj Rawat",
     author_email="pankajr141@gmail.com",
     description="Libraray contains algo to generate images by learning representation from data",
@@ -19,9 +36,5 @@ setuptools.setup(
         "License :: OSI Approved :: Apache Software License",
         "Operating System :: OS Independent",
     ),
-    install_requires=[
-        'tensorflow>=2.3.1',
-        'matplotlib',
-        'scikit-learn>=0.24.2'
-    ],
+    install_requires=install_requires
 )
